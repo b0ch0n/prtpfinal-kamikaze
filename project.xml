@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="PRTPFinalKamikaze" package="com.sample.project" version="1.0.0" company="Company Name" />
+	<app main="Main" path="Export" file="PRTPFinalKamikaze" />
+	
+	<source path="Source" />
+	
+	<haxelib name="openfl" />
+	<haxelib name="flixel" />
+	<haxelib name="flixel-addons" />
+	<haxelib name="nape" />
+	
+	
+	<haxedef name="FLX_NO_GAMEPAD" if="flash" />
+	
+	<assets path="Assets" rename="assets" exclude="openfl.svg" />
+	<assets path="Assets/maps" rename="maps" include="*.tmx" />
+	<assets path="Assets/graphics" rename="gfx" include="*.png" />
+	
+	<icon path="Assets/openfl.svg" />
+	
+</project>
