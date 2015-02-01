@@ -1,6 +1,6 @@
 package ;
 
-//import entities.KamikazeNapeMO2D;
+import entities.KamikazeNapeMO2D;
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectGroup;
@@ -87,19 +87,19 @@ class TiledLevel extends TiledMap
 		}
 	}
 	
-	public function LoadObjects():Void//state:GameNapeState):Void
+	public function LoadObjects(state:GameNapeState):Void
 	{
 		for (group in objectGroups)
 		{
 			for (obj in group.objects)
 			{
-				LoadObject(obj, group);// , state);
+				LoadObject(obj, group , state);
 				//trace("obj.gid = "+obj.gid+"   obj.x = "+obj.x+"   obj.y"+obj.y);
 			}
 		}
 	}
 	
-	public function LoadObject(obj:TiledObject, group:TiledObjectGroup):Void//, state:GameNapeState):Void
+	public function LoadObject(obj:TiledObject, group:TiledObjectGroup, state:FlxNapeState):Void
 	{
 		var x:Int = obj.x;
 		var y:Int = obj.y;
@@ -113,7 +113,9 @@ class TiledLevel extends TiledMap
 		switch(obj.type.toLowerCase())
 		{
 			case "kamikaze":
-				//state.add(new KamikazeNapeMO2D(obj, state.GetSpace()));
+				trace(FlxNapeState.space);
+				//state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
+				state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
 			
 			case "floor":
 				LoadFloor(obj);// , state);

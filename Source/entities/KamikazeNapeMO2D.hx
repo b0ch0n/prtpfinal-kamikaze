@@ -1,16 +1,9 @@
 package entities;
 
-//import com.haxepunk.Entity;
-//import com.haxepunk.Graphic;
-//import com.haxepunk.graphics.Spritemap;
-//import com.haxepunk.Mask;
-//import com.haxepunk.math.Vector;
 import flash.geom.Point;
 import flixel.addons.nape.FlxNapeSprite;
-//import com.haxepunk.utils.Input;
-//import com.haxepunk.utils.Key;
-//import com.haxepunk.tmx.TmxObject;
-//import com.haxepunk.HXP;
+import flixel.FlxSprite;
+import flixel.addons.editors.tiled.TiledObject;
 import nape.phys.Material;
 import nape.shape.Polygon;
 import nape.util.BitmapDebug;
@@ -25,11 +18,12 @@ import nape.shape.Circle;
 import nape.shape.Shape;
 import nape.space.Space;
 
-//import com.haxepunk.nape.NapeEntity;
 import nape.phys.BodyType;
 import nape.constraint.PivotJoint;
 
 import nape.util.Debug;
+import flixel.FlxG;
+import flixel.util.FlxAngle;
 
 /**
  * ...
@@ -41,7 +35,7 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	private var bezierMO2D : CurveBezierMO2D = null;
 	private var banzai:Bool = false;
 	private var bezierPointsLoaded:Bool = false;
-	private var spKamikaze : Spritemap;
+	private var spKamikaze : FlxSprite;
 	private var pointsForCurve : Int = 5;
 	private var countPoints : Int = 0;
 	private var bezierPoints : Array<flash.geom.Point>;
@@ -63,20 +57,19 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	 * @param	space : Space world del Engine Nape en el cual se debe agregar el body del actual objeto
 		* con las propiedades physics para interactuar.
 	 */
-	public function new(obj : TmxObject, spaceNape : Space = null)
+	public function new(obj : TiledObject, spaceNape : Space = null)
 	{
 		
-		super();
-		space = spaceNape;
-		SetBodiesNape(obj, spaceNape);
+		super(obj.x, obj.y);
 
-		set_name("KamikazeNapeMO2D");
+		space = spaceNape;
 		
-		spKamikaze = new Spritemap("gfx/kamikaze.png", 110, 48);
-		spKamikaze.add("flying", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], 5);
-		spKamikaze.play("flying");		
-		spKamikaze.centerOrigin();
-		graphic = spKamikaze;
+		SetBodiesNape(obj, spaceNape);
+		this.loadGraphic("gfx/kamikaze.png", true, 110, 48, false);
+		this.animation.add("flying", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], 30, true);
+		this.animation.play("flying", true);
+		this.centerOrigin();
+		
 
 		bezierMO2D = new CurveBezierMO2D(body.position.x , body.position.y);
 		
@@ -84,13 +77,11 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		bezierPoints = new Array<flash.geom.Point>();
 		bezierPointsAngles = new Array < Float >();
 		
-		debugNape = new BitmapDebug(Std.int(HXP.stage.width), Std.int(HXP.stage.height), HXP.stage.color);
+		//debugNape = new BitmapDebug(Std.int(FlxG.stage.width), Std.int(FlxG.stage.height), FlxG.stage.color);
 		
-		
-		//trace("KamikazeNapeMO2D IDEA: Tener distintos tipos de aviones, ej: uno con ametralladora, otro tira bombas, otro misiles");
 	}
 
-	private function SetBodiesNape(obj:TmxObject, spaceNape:Space):Void
+	private function SetBodiesNape(obj:TiledObject, spaceNape:Space):Void
 	{
 		// body heredado de NapeEntity
 		body = new Body(BodyType.DYNAMIC);
@@ -170,14 +161,13 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		bodyAux.setShapeMaterials(new Material(1, 0.2, 0.5, 0.5, 0.001));
 		bodyAux.allowMovement = true;// false;
 		bodyAux.mass = 0.02;
-		bodyAux.space = spaceNape;
+		//bodyAux.space = spaceNape;
 		
 		// uniendo los bodies
 		WeldJointBodies(obj);
-		//PivotJointBodies(obj);
 	}
 	
-	public function WeldJointBodies(obj:TmxObject=null):Void
+	public function WeldJointBodies(obj:TiledObject=null):Void
 	{
 		// Vec2.get((body.position.x + bodyAux.position.x) / 2, (body.position.y + bodyAux.position.y) / 2);
 		var anchor = new Vec2();// 50 , 50);
@@ -193,34 +183,16 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		weldJoint.debugDraw = true;
 		weldJoint.space = space;
 	}
-	
-	public function PivotJointBodies(obj:TmxObject):Void
-	{
-  var anchor = new Vec2((body.position.x + bodyAux.position.x) / 2, (body.position.y + bodyAux.position.y) / 2);
-		var pivotJoint = new PivotJoint(
-		body,
-		bodyAux,
-		body.worldPointToLocal(anchor, true),
-		bodyAux.worldPointToLocal(anchor, true)
-		);
-		anchor.dispose();
-		pivotJoint.stiff = true;// o false;// union rigida o elastica
-		pivotJoint.ignore = true;// ignora colisiones con los bodies unidos
-		pivotJoint.debugDraw = true;
-		pivotJoint.space = space;
-	}
 
 	override public function update():Void
-	{
-		//trace(body.position+"   "+this._point);
-			
+	{			
 		super.update();
-		x = body.position.x - 15*Math.cos(angle * HXP.RAD);
-		y = body.position.y - 15*Math.sin(angle * HXP.RAD);
+		//x = body.position.x - 15 * Math.cos(angle * FlxAngle.TO_RAD);
+		//y = body.position.y - 15 * Math.sin(angle * FlxAngle.TO_RAD);
 		
-		if (Input.mousePressed && countPoints <= pointsForCurve && !banzai)
+		if (FlxG.mouse.justPressed && countPoints <= pointsForCurve && !banzai)
 		{
-			bezierMO2D.AddControlPoint(new flash.geom.Point(Input.mouseX, Input.mouseY));
+			bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y));
 			bezierMO2D.LoadBezierPoints();
 			countPoints++;
 			
@@ -236,15 +208,12 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		}
 	}
 	
-	override public function render():Void
+	override public function draw():Void
 	{
-		super.render();
+		super.draw();
 		
-		bezierMO2D.render();
+		bezierMO2D.draw();
 		
-		//debugNape.clear();
-		//debugNape.draw(space);
-		//debugNape.flush();
 	}
 
 	public function MoveOnBezier():Void
@@ -291,7 +260,7 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		//var timeAux = HXP.elapsed;
 		while (t <= duration)
 		{
-			var p:Vector = bezierMO2D.Calculate(t);
+			var p:flash.geom.Point = bezierMO2D.Calculate(t);
 			bezierPoints.push(new flash.geom.Point(  p.x,p.y));
 			
 			t += timeStep;
