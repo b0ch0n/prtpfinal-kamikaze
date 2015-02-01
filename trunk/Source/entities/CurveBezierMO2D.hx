@@ -1,26 +1,22 @@
 package entities;
 
-import com.haxepunk.Entity;
-import com.haxepunk.Graphic;
-import com.haxepunk.Mask;
-
-import com.haxepunk.math.Vector;
-
-import com.haxepunk.HXP;
-import com.haxepunk.utils.Draw;
-import com.haxepunk.graphics.Image;
 import flash.geom.Point;
+import flixel.addons.nape.FlxNapeSprite;
+import flixel.FlxSprite;
+import lime.graphics.Image;
+import openfl.display.Graphics;
+import openfl.display.Sprite;
 
 /**
  * ...
  * @author Marcelo Ruben Guardia
  */
-class CurveBezierMO2D extends Entity
+class CurveBezierMO2D extends FlxSprite
 {	
 	
 	// Imagenes de los puntos de control y curva
-	private var graphicPoint : Image;
-	private var redPoint : Image;
+	private var graphicPoint : FlxSprite;// Image;
+	private var redPoint : FlxSprite;// Image;
 
 	// Array que contiene los puntos de control
 	private var controlPoints : Array<flash.geom.Point>;
@@ -31,33 +27,51 @@ class CurveBezierMO2D extends Entity
 	private var Q : Array<flash.geom.Point>;
 	private var N:Int = 0;
 	
-	
-	public function new(x:Float=0, y:Float=0, graphic:Graphic=null, mask:Mask=null) 
+/*
+	public function new(X:Float=0, Y:Float=0, ?SimpleGraphic:Dynamic) 
 	{
-		super(x, y, graphic, mask);
-		set_name("CurveBezierMO2D");
+		super(X, Y, ?SimpleGraphic);
 		
-		setHitbox(12, 23, 0, 0);
-		Draw.setTarget(HXP.buffer, HXP.camera);
+	}
+*/
+	public function new(x:Float=0, y:Float=0, ?SimpleGraphic:Dynamic) //, graphic:Graphics=null, mask:mask=null) 
+	{
+		//super(x, y, graphic, mask);
+		super(x, y);// , ?SimpleGraphic);
+		//set_name("CurveBezierMO2D");
 		
-		graphicPoint = new Image(ImageType.fromString(GC.IMG_green_point));
+		
+		//setHitbox(12, 23, 0, 0);
+		setSize(12, 13);
+		//Draw.setTarget(HXP.buffer, HXP.camera);
+		
+		//graphicPoint = new Image(ImageType.fromString(GC.IMG_green_point));
+		//graphicPoint.centerOrigin();
+		//graphicPoint.scale = 0.1;//0.04;
+		graphicPoint = new FlxSprite(0, 0, GC.IMG_green_point);
 		graphicPoint.centerOrigin();
-		graphicPoint.scale = 0.04;
+		graphicPoint.setSize(10, 10);// .scale.set( 0.1, 0.1); // 0.04;
 		
-		redPoint = new Image(ImageType.fromString(GC.IMG_red_point));
+		
+		//redPoint = new Image(ImageType.fromString(GC.IMG_red_point));
+		//redPoint.centerOrigin();
+		//redPoint.scale = 0.1;
+		redPoint = new FlxSprite(0, 0, GC.IMG_red_point);
 		redPoint.centerOrigin();
-		redPoint.scale = 0.1;
-
+		//redPoint.setSize(0.5, 10);
+		//redPoint.scale.set( 0.1, 0.1);
+		
+		
 		controlPoints = new Array<flash.geom.Point>();
 		Q = new Array<flash.geom.Point>();
 		bezierPoints = new Array<flash.geom.Point>();
 		AddControlPoint(new flash.geom.Point(x, y));
 	}
 	
-	public function destroy():Void
-	{
-		world.remove(this);
-	}
+	//public function destroy():Void
+	//{
+		//world.remove(this);
+	//}
 	
 	/**
 		* _ Agrega un punto de control de la curva en la posicion
@@ -88,15 +102,15 @@ class CurveBezierMO2D extends Entity
 		//}
 	}
 	
-	override public function render():Void
+	override public function draw():Void
 	{
-		super.render();
+		super.draw();// .render();
 		
 		// dibujo cada punto de control
 
 		for (cp in 0...controlPoints.length)
 		{
-			redPoint.render(HXP.buffer, new flash.geom.Point( controlPoints[cp].x, controlPoints[cp].y), HXP.camera);
+			redPoint.draw();// .render(HXP.buffer, new flash.geom.Point( controlPoints[cp].x, controlPoints[cp].y), HXP.camera);
 		}
 
 		if (controlPoints.length > 1)
@@ -115,7 +129,7 @@ class CurveBezierMO2D extends Entity
 		// dibujo el recorrido de la curva de bezier
 		for (p in 0...bezierPoints.length)
 		{
-			graphicPoint.render(HXP.buffer, new flash.geom.Point(bezierPoints[p].x,bezierPoints[p].y), HXP.camera);
+			graphicPoint.draw();// .render(HXP.buffer, new flash.geom.Point(bezierPoints[p].x, bezierPoints[p].y), HXP.camera);
 		}
 	}
 	

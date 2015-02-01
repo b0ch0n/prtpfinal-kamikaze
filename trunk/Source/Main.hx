@@ -15,7 +15,7 @@ class Main extends Sprite {
 		
 		super ();
 		
-		addChild(new FlxGame(1280,960, GameNapeState, 0.5));
+		addChild(new FlxGame( 3840, 2880));// , GameNapeState, 0.5));
 		
 		#if debug
 			FlxG.debugger.visible = true;

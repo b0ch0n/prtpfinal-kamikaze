@@ -4,16 +4,12 @@ import flash.display.Stage;
 import flash.geom.Point;
 import flixel.addons.nape.FlxNapeState;
 import flixel.addons.nape.FlxNapeSprite;
-import flixel.effects.FlxFlicker;
 import flixel.FlxObject;
-//import flixel.FlxState;
 import flixel.util.FlxPoint;
 import nape.geom.Vec2;
 import nape.space.Space;
 import flixel.FlxG;
 import nape.util.Debug;
-//import openfl.display.StageDisplayState;
-//import openfl.display.StageAlign;
 import flash.display.StageAlign;
 
 /**
@@ -29,9 +25,13 @@ class GameNapeState extends FlxNapeState
 
 	override public function create():Void
 	{
+		trace("FlxNapeState.hx:146: Next line comment b0ch0n!!! '//space.step(FlxG.elapsed, velocityIterations, positionIterations);'");
 		super.create();
-		
-		SetZoom(0.0);
+		//FlxG.game.width = 640 * 6;
+		//
+		//FlxG.game.height = 480 * 6;
+		//FlxG.resizeGame(640 * 6, 480 * 6);
+		SetZoom(4.0);// 0.1);
 		bgColor = 0x999;
 		levels = ["level_00"/*,"level_01","level_02"*/, "level_test"];
 		
@@ -50,7 +50,7 @@ class GameNapeState extends FlxNapeState
 	 add(tiledLevel.renderTiles);
 		
 		// cargando los objetos del nivel
-		tiledLevel.LoadObjects();// this);
+		tiledLevel.LoadObjects(this);
 		
 		// si lo hubiera, cargo otros tilemaps de render del nivel
 		//add(tiledLevel.otrosRenderTiles);
@@ -90,7 +90,6 @@ class GameNapeState extends FlxNapeState
 			SetZoom(-0.1);
 		}
 		
-				
 	}
 	
 	override public function draw():Void
