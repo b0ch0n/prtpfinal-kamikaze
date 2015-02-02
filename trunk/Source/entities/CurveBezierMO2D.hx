@@ -2,20 +2,20 @@ package entities;
 
 import flash.geom.Point;
 import flixel.addons.nape.FlxNapeSprite;
+import flixel.FlxObject;
 import flixel.FlxSprite;
-import lime.graphics.Image;
-import openfl.display.Graphics;
-import openfl.display.Sprite;
+import flixel.util.FlxColor;
+import flixel.util.FlxSpriteUtil;
 
 /**
  * ...
  * @author Marcelo Ruben Guardia
  */
-class CurveBezierMO2D extends FlxSprite
+class CurveBezierMO2D extends FlxObject// FlxSprite
 {	
 	
 	// Imagenes de los puntos de control y curva
-	private var graphicPoint : FlxSprite;// Image;
+	private var greenPoint : FlxSprite;// Image;
 	private var redPoint : FlxSprite;// Image;
 
 	// Array que contiene los puntos de control
@@ -26,53 +26,26 @@ class CurveBezierMO2D extends FlxSprite
 	
 	private var Q : Array<flash.geom.Point>;
 	private var N:Int = 0;
-	
-/*
-	public function new(X:Float=0, Y:Float=0, ?SimpleGraphic:Dynamic) 
+
+	public function new(x:Float=0, y:Float=0)
 	{
-		super(X, Y, ?SimpleGraphic);
+		super(x, y);
+
+		greenPoint = new FlxSprite( x, y, GC.IMG_green_point);
+		greenPoint.setGraphicSize(40, 40);
 		
-	}
-*/
-	public function new(x:Float=0, y:Float=0, ?SimpleGraphic:Dynamic) //, graphic:Graphics=null, mask:mask=null) 
-	{
-		//super(x, y, graphic, mask);
-		super(x, y);// , ?SimpleGraphic);
-		//set_name("CurveBezierMO2D");
-		
-		
-		//setHitbox(12, 23, 0, 0);
-		setSize(12, 13);
-		//Draw.setTarget(HXP.buffer, HXP.camera);
-		
-		//graphicPoint = new Image(ImageType.fromString(GC.IMG_green_point));
-		//graphicPoint.centerOrigin();
-		//graphicPoint.scale = 0.1;//0.04;
-		graphicPoint = new FlxSprite(0, 0, GC.IMG_green_point);
-		graphicPoint.centerOrigin();
-		graphicPoint.setSize(10, 10);// .scale.set( 0.1, 0.1); // 0.04;
-		
-		
-		//redPoint = new Image(ImageType.fromString(GC.IMG_red_point));
-		//redPoint.centerOrigin();
-		//redPoint.scale = 0.1;
-		redPoint = new FlxSprite(0, 0, GC.IMG_red_point);
-		redPoint.centerOrigin();
-		//redPoint.setSize(0.5, 10);
-		//redPoint.scale.set( 0.1, 0.1);
-		
+		greenPoint.updateHitbox();		
+
+		redPoint = new FlxSprite( x, y, GC.IMG_red_point);
+		redPoint.setGraphicSize(40, 40);
+		redPoint.updateHitbox();
 		
 		controlPoints = new Array<flash.geom.Point>();
 		Q = new Array<flash.geom.Point>();
 		bezierPoints = new Array<flash.geom.Point>();
 		AddControlPoint(new flash.geom.Point(x, y));
 	}
-	
-	//public function destroy():Void
-	//{
-		//world.remove(this);
-	//}
-	
+
 	/**
 		* _ Agrega un punto de control de la curva en la posicion
 		* _ indicada por el punto cp
@@ -104,36 +77,30 @@ class CurveBezierMO2D extends FlxSprite
 	
 	override public function draw():Void
 	{
-		super.draw();// .render();
+		//super.draw();
 		
 		// dibujo cada punto de control
-
 		for (cp in 0...controlPoints.length)
 		{
-			redPoint.draw();// .render(HXP.buffer, new flash.geom.Point( controlPoints[cp].x, controlPoints[cp].y), HXP.camera);
+			redPoint.setPosition(controlPoints[cp].x, controlPoints[cp].y);
+			redPoint.setPosition(controlPoints[cp].x - redPoint.width/2, controlPoints[cp].y - redPoint.height/2);
+			redPoint.draw();
 		}
 
+		// si hay mas de 1 punto de control
 		if (controlPoints.length > 1)
 		{
-			RenderCurve();
+			// dibujo el recorrido de la curva de bezier
+			for (p in 0...bezierPoints.length)
+			{
+				//greenPoint.setPosition(bezierPoints[p].x, bezierPoints[p].y);
+				greenPoint.setPosition(bezierPoints[p].x - greenPoint.width/2, bezierPoints[p].y - greenPoint.height/2);
+				
+				greenPoint.draw();
+			}
 		}		
 	}
 
-	/**
-		* _ Dibuja la curva de Bezier
-		* _ longSegment = largo de los segmentos que trazan la curva
-		* NOTA: Para que se dibuje tiene que tener 3 o mas puntos de control
-		* */
-	public function RenderCurve(longSegment:Int=0):Void
-	{		
-		// dibujo el recorrido de la curva de bezier
-		for (p in 0...bezierPoints.length)
-		{
-			graphicPoint.draw();// .render(HXP.buffer, new flash.geom.Point(bezierPoints[p].x, bezierPoints[p].y), HXP.camera);
-		}
-	}
-	
-	
 	/**
 		* _ Calcula la posicion sobre la curva en el tiempo "t"
 		* */
