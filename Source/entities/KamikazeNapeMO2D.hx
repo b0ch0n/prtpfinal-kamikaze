@@ -4,6 +4,7 @@ import flash.geom.Point;
 import flixel.addons.nape.FlxNapeSprite;
 import flixel.FlxSprite;
 import flixel.addons.editors.tiled.TiledObject;
+import flixel.util.FlxColor;
 import nape.phys.Material;
 import nape.shape.Polygon;
 import nape.util.BitmapDebug;
@@ -24,6 +25,12 @@ import nape.constraint.PivotJoint;
 import nape.util.Debug;
 import flixel.FlxG;
 import flixel.util.FlxAngle;
+
+import flixel.util.FlxSpriteUtil.DrawStyle;
+
+import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxSpriteUtil.LineStyle;
+//import flixel.plugin.MouseEventManager;
 
 /**
  * ...
@@ -71,13 +78,15 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		this.centerOrigin();
 		
 
-		bezierMO2D = new CurveBezierMO2D(body.position.x , body.position.y);
+		bezierMO2D = new CurveBezierMO2D(obj.x , obj.y);
 		
 		countPoints++;
 		bezierPoints = new Array<flash.geom.Point>();
 		bezierPointsAngles = new Array < Float >();
 		
 		//debugNape = new BitmapDebug(Std.int(FlxG.stage.width), Std.int(FlxG.stage.height), FlxG.stage.color);
+		
+		//MouseEventManager.setMouseDownCallback(this, OnMouseDown(Void->Void), Void);
 		
 	}
 
@@ -185,12 +194,12 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	}
 
 	override public function update():Void
-	{			
+	{
 		super.update();
 		//x = body.position.x - 15 * Math.cos(angle * FlxAngle.TO_RAD);
 		//y = body.position.y - 15 * Math.sin(angle * FlxAngle.TO_RAD);
 		
-		if (FlxG.mouse.justPressed && countPoints <= pointsForCurve && !banzai)
+		if (FlxG.mouse.justReleased && countPoints <= pointsForCurve && !banzai)
 		{
 			bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y));
 			bezierMO2D.LoadBezierPoints();
@@ -208,12 +217,33 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		}
 	}
 	
+	//public function OnMouseDown():Void
+	//{
+		//if (FlxG.mouse.pressed && countPoints <= pointsForCurve && !banzai)
+		//{
+			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y));
+			//bezierMO2D.LoadBezierPoints();
+			//countPoints++;
+			//
+			//if (countPoints == pointsForCurve)
+			//{
+				//banzai = true;
+			//}
+		//}
+		//else
+		//if (banzai)
+		//{
+			//MoveOnBezier();
+		//}
+	//}
+	
 	override public function draw():Void
 	{
 		super.draw();
 		
 		bezierMO2D.draw();
 		
+		//FlxSpriteUtil.drawRect(this, FlxG.stage.x, FlxG.stage.y, FlxG.stage.width, FlxG.stage.height, FlxColor.CYAN, LineStyle, FillStyle, DrawStyle);
 	}
 
 	public function MoveOnBezier():Void

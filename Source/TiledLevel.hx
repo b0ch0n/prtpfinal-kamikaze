@@ -30,7 +30,7 @@ class TiledLevel extends TiledMap
 		super(tiledLevel);
 		
 		renderTiles = new FlxGroup();
-		trace("fullWidth  = "+fullWidth+"  fullHeight  = "+ fullHeight);
+		//trace("fullWidth  = "+fullWidth+"  fullHeight  = "+ fullHeight);
 		FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
 		
 		// Cargando los Tile Maps de cada layer
@@ -113,7 +113,7 @@ class TiledLevel extends TiledMap
 		switch(obj.type.toLowerCase())
 		{
 			case "kamikaze":
-				trace(FlxNapeState.space);
+				//trace(FlxNapeState.space);
 				//state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
 				state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
 			
