@@ -11,12 +11,12 @@ import flixel.util.FlxSpriteUtil;
  * ...
  * @author Marcelo Ruben Guardia
  */
-class CurveBezierMO2D extends FlxObject// FlxSprite
+class CurveBezierMO2D extends FlxObject
 {	
 	
 	// Imagenes de los puntos de control y curva
-	private var greenPoint : FlxSprite;// Image;
-	private var redPoint : FlxSprite;// Image;
+	private var greenPoint : FlxSprite;
+	private var redPoint : FlxSprite;
 
 	// Array que contiene los puntos de control
 	private var controlPoints : Array<flash.geom.Point>;
@@ -31,18 +31,19 @@ class CurveBezierMO2D extends FlxObject// FlxSprite
 	{
 		super(x, y);
 
-		greenPoint = new FlxSprite( x, y, GC.IMG_green_point);
-		greenPoint.setGraphicSize(40, 40);
-		
-		greenPoint.updateHitbox();		
+		greenPoint = new FlxSprite( x, y, GC.IMG_green_point_16);
+		//greenPoint.setGraphicSize(40, 40);	
+		//greenPoint.updateHitbox();
+		greenPoint.centerOrigin();
 
-		redPoint = new FlxSprite( x, y, GC.IMG_red_point);
-		redPoint.setGraphicSize(40, 40);
-		redPoint.updateHitbox();
+		redPoint = new FlxSprite();// x, y);
+		redPoint.loadGraphic(GC.IMG_red_point_32, true, 32, 32);
+		//redPoint.loadGraphic("gfx/tnt.png", false, 160, 240);
+		redPoint.centerOrigin();
 		
 		controlPoints = new Array<flash.geom.Point>();
-		Q = new Array<flash.geom.Point>();
 		bezierPoints = new Array<flash.geom.Point>();
+		Q = new Array<flash.geom.Point>();
 		AddControlPoint(new flash.geom.Point(x, y));
 	}
 
@@ -83,7 +84,7 @@ class CurveBezierMO2D extends FlxObject// FlxSprite
 		for (cp in 0...controlPoints.length)
 		{
 			redPoint.setPosition(controlPoints[cp].x, controlPoints[cp].y);
-			redPoint.setPosition(controlPoints[cp].x - redPoint.width/2, controlPoints[cp].y - redPoint.height/2);
+			//redPoint.setPosition(controlPoints[cp].x - redPoint.width/2, controlPoints[cp].y - redPoint.height/2);
 			redPoint.draw();
 		}
 
