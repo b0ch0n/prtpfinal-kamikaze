@@ -21,6 +21,13 @@ class GC
 	public static var IMG_tileset:Dynamic = "gfx/tileset.png";	
 
 	// sprites
+	public static var IMG_kamikaze:Dynamic = "gfx/kamikaze.png";
+	public static var IMG_red_point:Dynamic = "gfx/red-point.png";
+	public static var IMG_green_point:Dynamic = "gfx/green-point.png";
+	public static var IMG_red_point_32:Dynamic = "gfx/red-point-32.png";
+	public static var IMG_green_point_16:Dynamic = "gfx/green-point-16.png";
+	public static var IMG_blue_point:Dynamic = "gfx/blue-point.png";
+	
 	public static var IMG_bala_tanque:Dynamic = "gfx/bala-tanque.png";
 	public static var IMG_fx_disparo:Dynamic = "gfx/disparo.png";
 	public static var IMG_explosion:Dynamic = "gfx/explosion.png";
@@ -29,10 +36,6 @@ class GC
 	public static var IMG_tnt:Dynamic = "gfx/tnt.png";
 	public static var IMG_helicoptero:Dynamic = "gfx/helicoptero.png";
 	public static var IMG_tanque:Dynamic = "gfx/tanque.png";
-	public static var IMG_kamikaze:Dynamic = "gfx/kamikaze.png";
-	public static var IMG_red_point:Dynamic = "gfx/red-point.png";
-	public static var IMG_green_point:Dynamic = "gfx/green-point.png";
-	public static var IMG_blue_point:Dynamic = "gfx/blue-point.png";
 	
 	
 	// sonidos
