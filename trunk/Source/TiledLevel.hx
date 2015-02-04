@@ -1,5 +1,6 @@
 package ;
 
+import entities.KamikazeMO2D;
 import entities.KamikazeNapeMO2D;
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
@@ -115,7 +116,7 @@ class TiledLevel extends TiledMap
 			case "kamikaze":
 				//trace(FlxNapeState.space);
 				//state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
-				state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
+				state.add(new KamikazeMO2D(obj, FlxNapeState.space));
 			
 			case "floor":
 				LoadFloor(obj);// , state);

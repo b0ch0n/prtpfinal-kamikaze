@@ -1,42 +1,25 @@
 package entities;
 
-import flash.geom.Point;
-import flixel.addons.nape.FlxNapeSprite;
-import flixel.FlxSprite;
 import flixel.addons.editors.tiled.TiledObject;
-import flixel.util.FlxColor;
-import nape.phys.Material;
-import nape.shape.Polygon;
-import nape.util.BitmapDebug;
-
-import nape.constraint.Constraint;
+import flixel.FlxCamera;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxAngle;
 import nape.constraint.WeldJoint;
-import nape.dynamics.Arbiter;
 import nape.geom.Vec2;
 import nape.phys.Body;
-import nape.phys.Compound;
-import nape.shape.Circle;
-import nape.shape.Shape;
-import nape.space.Space;
-
 import nape.phys.BodyType;
-import nape.constraint.PivotJoint;
-
+import nape.shape.Polygon;
+import nape.space.Space;
 import nape.util.Debug;
-import flixel.FlxG;
-import flixel.util.FlxAngle;
-
-import flixel.util.FlxSpriteUtil.DrawStyle;
-
-import flixel.util.FlxSpriteUtil;
-import flixel.util.FlxSpriteUtil.LineStyle;
-//import flixel.plugin.MouseEventManager;
+import flash.geom.Point;
 
 /**
  * ...
  * @author Marcelo Ruben Guardia
  */
-class KamikazeNapeMO2D extends FlxNapeSprite
+class KamikazeMO2D extends FlxSprite
 {
 	
 	private var bezierMO2D : CurveBezierMO2D = null;
@@ -54,6 +37,7 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	private var timeStep:Float = 0.005;// 0.05;
 	private var indexBezierPoint:Int = 0;
 	
+	private var body:Body;
 	private var bodyAux:Body;
 	private var debugNape:Debug;
 	private var space:Space;
@@ -68,8 +52,20 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	 */
 	public function new(obj : TiledObject, spaceNape : Space = null)
 	{
-		//super(obj.x, obj.y);
-		super(obj.x, obj.y, "gfx/tnt.png" , true, true);
+		super(obj.x, obj.y);
+		//cargo la imagen de animacion
+		this.loadGraphic("gfx/kamikaze-1760-80x38.png", true, 80, 38);
+		//this.loadRotatedGraphic("gfx/kamikaze-1760-80x38.png", 360, 0, false, true);
+		this.animation.add("flying", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], 30, true);
+		this.animation.play("flying", true);
+		//this.bakedRotationAngle = 1.0;
+		
+		//this.angle = 45.0;
+		//FlxAngle.rotatePoint(width, _halfHeight, x, y, 45.0);
+		this.centerOrigin();
+		SetBodiesNape(obj, spaceNape);
+		
+/*		
 		scale.set( 0.25, 0.25);
 		//body.shapes.add(new Circle(15));
 		body.mass = 100;
@@ -88,12 +84,7 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		
 		//SetBodiesNape(obj, spaceNape);
 		physicsEnabled = true;
-		//this.loadGraphic("gfx/kamikaze.png", true, 110, 48, false);
-		//this.loadGraphic("gfx/kamikaze-1760-80x38.png", true, 80, 38, false);
-		
-		//this.animation.add("flying", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], 30, true);
-		//this.animation.play("flying", true);
-		//this.centerOrigin();
+*/
 		
 
 		bezierMO2D = new CurveBezierMO2D(obj.x , obj.y);
@@ -102,6 +93,8 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		bezierPoints = new Array<flash.geom.Point>();
 		bezierPointsAngles = new Array < Float >();
 		
+		//FlxG.camera.setBounds(0, 0, 640, 480, true);// FlxG.width, FlxG.height, true);
+		FlxG.camera.follow(this,FlxCamera.STYLE_PLATFORMER);
 	}
 
 	private function SetBodiesNape(obj:TiledObject, spaceNape:Space):Void
@@ -109,7 +102,12 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		// body heredado de NapeEntity
 		body = new Body(BodyType.DYNAMIC);
 		body.position.setxy(obj.x, obj.y);
-		//body.shapes.add(new Polygon(Polygon.box(50, 30))); // new Circle(20));
+		body.debugDraw = true;
+		body.mass = 1;
+		body.allowMovement = false;
+		body.allowRotation = true;
+		body.shapes.add(new Polygon(Polygon.box(40, 30))); // new Circle(20));
+		body.space = spaceNape;
 		/*
 		var localVerts:Array<Vec2> = new Array<Vec2>();
 
@@ -133,7 +131,7 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		localVerts.push(new Vec2(40,5));
 		*/
 		//body.shapes.add(new Polygon(localVerts));
-		body.shapes.add(new Circle(14));// Polygon(Polygon.rect(0, 7, 20, 14, true)));
+		//body.shapes.add(new Circle(14));// Polygon(Polygon.rect(0, 7, 20, 14, true)));
 		//localVerts.splice(0, localVerts.length);
 /*
 		// Material(elasticity=0, dynamicFriction=1, staticFriction=2, density=1, rollingFriction=0.001));//default values
@@ -188,9 +186,10 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	override public function update():Void
 	{
 		super.update();
-		//x = body.position.x - 15 * Math.cos(angle * FlxAngle.TO_RAD);
-		//y = body.position.y - 15 * Math.sin(angle * FlxAngle.TO_RAD);
-		
+		x = body.position.x - this._halfWidth;// * Math.cos(angle * FlxAngle.TO_RAD);
+		y = body.position.y - this._halfHeight;// * Math.sin(angle * FlxAngle.TO_RAD);
+		angle = body.rotation * FlxAngle.TO_DEG;
+
 		if (FlxG.mouse.justReleased && countPoints <= pointsForCurve && !banzai)
 		{
 			bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y));
@@ -209,12 +208,12 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 				MoveOnBezier();
 		}
 		
-		trace("body.kinematicVel = " + body.kinematicVel + "  body.inertia = " + body.inertia + "  body.gravMass = " + body.gravMass);
-		trace("body.localCOM = " + body.localCOM + "  body.mass = " + body.mass + "  body.space = " + body.space);
-		trace("body.velocity = " + body.velocity + "  body.type = " + body.type + "  body.constraintVelocity = " + body.constraintVelocity);
-		trace("body.space.elapsedTime = " + body.space.elapsedTime + "  body.space.gravity = " + body.space.gravity);
-		trace("");
-		
+		//trace("body.kinematicVel = " + body.kinematicVel + "  body.inertia = " + body.inertia + "  body.gravMass = " + body.gravMass);
+		//trace("body.localCOM = " + body.localCOM + "  body.mass = " + body.mass + "  body.space = " + body.space);
+		//trace("body.velocity = " + body.velocity + "  body.type = " + body.type + "  body.constraintVelocity = " + body.constraintVelocity);
+		//trace("body.space.elapsedTime = " + body.space.elapsedTime + "  body.space.gravity = " + body.space.gravity);
+		//trace("");
+
 		
 		#if debug
 			if (FlxG.keys.justReleased.D)
@@ -222,6 +221,8 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 				drawing = !drawing;
 			}
 		#end
+		
+		FlxG.camera.update();
 	}
 	
 	override public function draw():Void
@@ -273,7 +274,7 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 	{
 		// borra todos los puntos guardados
 		bezierPoints.splice(0, bezierPoints.length);
-		
+		/*
 		var t = 0.0;
 		//var timeAux = HXP.elapsed;
 		while (t <= duration)
@@ -283,6 +284,21 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 			
 			t += timeStep;
 			//t += timeAux;
+		}
+		*/
+		
+		var LOD = countPoints * 4;
+		var dt = 1.0 / (LOD - 1.0);
+		var k = 0;
+		while (k < LOD)
+		{
+			var t = dt * k;
+			if (t <= 1.0)
+				t -= 0.00001;
+			
+			bezierPoints.push(bezierMO2D.Calculate(t));
+			
+			k++;
 		}
 	}
 	
@@ -311,10 +327,11 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		var power = 50;
 		var power2 = 10;
 		//var impulse:Vec2 = new Vec2( power * Math.cos( angle * HXP.RAD), power * Math.sin( angle * HXP.RAD));
-		var impulse:Vec2 = new Vec2(deltaX * power2, deltaY * power2);
+		var impulse:Vec2 = new Vec2(deltaX * power, deltaY * power);
+		//var impulse:Vec2 = new Vec2(deltaX * power2, deltaY * power2);
 		
-		trace("angle = " + angle + "  impulse = " + impulse);
-		trace("indexBezierPoint = " + indexBezierPoint + "   bezierPoints.length = " + bezierPoints.length);
+		//trace("angle = " + angle + "  impulse = " + impulse);
+		//trace("indexBezierPoint = " + indexBezierPoint + "   bezierPoints.length = " + bezierPoints.length);
 		//body.force = impulse;
 		
 		//body.applyImpulse(impulse, new Vec2(this.x, this.y), false);
@@ -322,6 +339,8 @@ class KamikazeNapeMO2D extends FlxNapeSprite
 		body.applyImpulse(impulse, null, true);
 		kamikazeLaunched = true;
 		//bodyAux.applyImpulse(impulse, null, true);
+		
+		//FlxG.camera.shake(0.05, 0.5);
 	}
 	
 }

@@ -39,15 +39,12 @@ class GameNapeState extends FlxNapeState
 	{
 		//trace("FlxNapeState.hx:146: Next line comment b0ch0n!!! '//space.step(FlxG.elapsed, velocityIterations, positionIterations);'");
 		super.create();
-		FlxG.plugins.add(new MouseEventManager());
+		
 		canvas = new FlxSprite();
 		canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
 		add(canvas);
-		//FlxG.game.width = 640 * 6;
-		//
-		//FlxG.game.height = 480 * 6;
-		//FlxG.resizeGame(640 * 6, 480 * 6);
-		//SetZoom(4.0);// 0.1);
+
+		SetZoom(3);// 0.1);
 		bgColor = 0x000999;
 		levels = ["level_00"/*,"level_01","level_02"*/, "level_test"];
 		
@@ -81,9 +78,10 @@ class GameNapeState extends FlxNapeState
 
 	public function SetupSpaceNape():Void
 	{
-		//var gravity = 
-		FlxNapeState.space.gravity = new Vec2(0, 981);
+		FlxNapeState.space.gravity.setxy(0, 981);// (new Vec2(0, 981));
+		//FlxNapeState.space.step(0.016);// , velocityIterations, positionIterations);
 		napeDebugEnabled = true;
+		this.active = true;
 	}
 	
 	//public function GetSpace():Space
@@ -123,19 +121,10 @@ class GameNapeState extends FlxNapeState
 		}
 	}
 	
-	override public function draw():Void
-	{
-		super.draw();
-		//for (b in 0...space.bodies.length)
-		//{
-			//Debug.createGraphic(space.bodies.at(b));
-		//}
-		//var r = new Rectangle(FlxG.stage.x, FlxG.stage.y, FlxG.stage.width, FlxG.stage.height);
-		//var r = new Rectangle(FlxG.camera.x, FlxG.camera.y, FlxG.camera.width, FlxG.camera.height);
-		
-		//FlxSpriteUtil.drawRect(canvas, r.x, r.y, r.width, r.height, FlxColor.CYAN);
-		
-	}
+	//override public function draw():Void
+	//{
+		//super.draw();
+	//}
 	
 
 	public function SetZoom(deltaZoom:Float = 1.0):Void
