@@ -10,6 +10,7 @@ import nape.constraint.WeldJoint;
 import nape.geom.Vec2;
 import nape.phys.Body;
 import nape.phys.BodyType;
+import nape.phys.Material;
 import nape.shape.Polygon;
 import nape.space.Space;
 import nape.util.Debug;
@@ -63,29 +64,8 @@ class KamikazeMO2D extends FlxSprite
 		//this.angle = 45.0;
 		//FlxAngle.rotatePoint(width, _halfHeight, x, y, 45.0);
 		this.centerOrigin();
-		SetBodiesNape(obj, spaceNape);
-		
-/*		
-		scale.set( 0.25, 0.25);
-		//body.shapes.add(new Circle(15));
-		body.mass = 100;
-		
-		body.allowMovement = false;
-		body.space = spaceNape;
-		//body.allowMovement = true;
-		//
-		//var testBody = new Body(BodyType.DYNAMIC, new Vec2(obj.x+150, obj.y));
-		//testBody.shapes.add(new Circle(50));
-		//testBody.allowMovement = true;
-		//testBody.mass = 100;
-		//testBody.space = spaceNape;
-		
 		space = spaceNape;
-		
-		//SetBodiesNape(obj, spaceNape);
-		physicsEnabled = true;
-*/
-		
+		SetBodiesNape(obj);
 
 		bezierMO2D = new CurveBezierMO2D(obj.x , obj.y);
 		
@@ -93,83 +73,66 @@ class KamikazeMO2D extends FlxSprite
 		bezierPoints = new Array<flash.geom.Point>();
 		bezierPointsAngles = new Array < Float >();
 		
-		//FlxG.camera.setBounds(0, 0, 640, 480, true);// FlxG.width, FlxG.height, true);
-		FlxG.camera.follow(this,FlxCamera.STYLE_PLATFORMER);
 	}
 
-	private function SetBodiesNape(obj:TiledObject, spaceNape:Space):Void
+	private function SetBodiesNape(obj:TiledObject):Void
 	{
 		// body heredado de NapeEntity
 		body = new Body(BodyType.DYNAMIC);
 		body.position.setxy(obj.x, obj.y);
 		body.debugDraw = true;
-		body.mass = 1;
+		body.mass = 0.75;
 		body.allowMovement = false;
 		body.allowRotation = true;
-		body.shapes.add(new Polygon(Polygon.box(40, 30))); // new Circle(20));
-		body.space = spaceNape;
-		/*
+		body.setShapeMaterials(new Material(1, 0.2, 0.5, 0.5, 0.001));
+		body.space = space;
+		
 		var localVerts:Array<Vec2> = new Array<Vec2>();
 
-		localVerts.push(new Vec2(40,5));
-		localVerts.push(new Vec2(23,-12));
-		localVerts.push(new Vec2(7,-12));
-		localVerts.push(new Vec2( -5, -3));
+		// vertices de la cabina del avion
+		localVerts.push(new Vec2(27, 5));
+		localVerts.push(new Vec2(10, -12));
+		localVerts.push(new Vec2(-6, -12));
 		
-		//localVerts.push(new Vec2(-25,-3));
-		//localVerts.push(new Vec2( -28, -12));
-		//localVerts.push(new Vec2( -35, -12));
+		localVerts.push(new Vec2( -18, -3));
+		localVerts.push(new Vec2( -18, 17));
 		
-		//localVerts.push(new Vec2(-40,5));
-		localVerts.push(new Vec2(-5,17));
-		//localVerts.push(new Vec2(-5,-3));
+		localVerts.push(new Vec2(-7, 19));		
+		localVerts.push(new Vec2(2, 19));		
+		localVerts.push(new Vec2(19, 17));		
+		localVerts.push(new Vec2(27, 5));		
 		
-		//localVerts.push(new Vec2(-5,17));
-		localVerts.push(new Vec2(6,19));
-		localVerts.push(new Vec2(15,19));
-		localVerts.push(new Vec2(32,17));
-		localVerts.push(new Vec2(40,5));
-		*/
-		//body.shapes.add(new Polygon(localVerts));
-		//body.shapes.add(new Circle(14));// Polygon(Polygon.rect(0, 7, 20, 14, true)));
-		//localVerts.splice(0, localVerts.length);
-/*
-		// Material(elasticity=0, dynamicFriction=1, staticFriction=2, density=1, rollingFriction=0.001));//default values
-		body.setShapeMaterials(new Material(0, 1, 2, 1, 0.001));//default values
-		//body.setShapeMaterials(new Material(1, 0.2, 0.5, 0.5, 0.001));
-		body.allowMovement = false;
-		body.allowRotation = true;// false;
-		body.mass = 10.2;
-		body.space = spaceNape;
-		//body.align();
+		body.shapes.add(new Polygon(localVerts));
 		
 		// body agregado en variable auxiliar
 		bodyAux = new Body(BodyType.DYNAMIC);
-		bodyAux.position.setxy(obj.x - 10, obj.y);
-		//bodyAux.shapes.add(new Polygon(Polygon.box(20, 20)));//new Circle(10));
+		bodyAux.position.setxy(obj.x, obj.y);
 
-		localVerts.push(new Vec2(-5,-3));
-		localVerts.push(new Vec2(-40,-2));
-		localVerts.push(new Vec2(-40,5));
-		localVerts.push(new Vec2(-5,17));
-		localVerts.push(new Vec2(-5,-3));
+		localVerts.splice(0, localVerts.length);// vaciando el array de vertices
+		
+		// vertices de la cola del avion
+		localVerts.push(new Vec2( -18, -3));
+		
+		localVerts.push(new Vec2( -48, -12));
+		localVerts.push(new Vec2( -53, 5));
+		
+		localVerts.push(new Vec2( -18, 17));		
+		localVerts.push(new Vec2( -18, -3));
 		
 		bodyAux.shapes.add(new Polygon(localVerts));
 		// Material(elasticity=0, dynamicFriction=1, staticFriction=2, density=1, rollingFriction=0.001));//default values
-		bodyAux.setShapeMaterials(new Material(1, 0.2, 0.5, 0.5, 0.001));
+		bodyAux.setShapeMaterials(new Material(1, 0.5, 0.5, 0.5, 0.001));
 		bodyAux.allowMovement = true;// false;
-		bodyAux.mass = 0.02;
-		*/
-		//bodyAux.space = spaceNape;
+		bodyAux.mass = 0.2;
+		bodyAux.space = space;
 		
 		// uniendo los bodies
-		//WeldJointBodies(obj);
+		WeldJointBodies(obj);
 	}
 	
 	public function WeldJointBodies(obj:TiledObject=null):Void
 	{
-		// Vec2.get((body.position.x + bodyAux.position.x) / 2, (body.position.y + bodyAux.position.y) / 2);
-		var anchor = new Vec2();// 50 , 50);
+		var anchor = new Vec2();
 		var weldJoint = new WeldJoint(
 		body,
 		bodyAux,
@@ -177,7 +140,7 @@ class KamikazeMO2D extends FlxSprite
 		bodyAux.worldPointToLocal(anchor, true)
 		);
 		anchor.dispose();
-		weldJoint.stiff = false;// true o false;// union rigida o elastica
+		weldJoint.stiff = true;// true o false;// union rigida o elastica
 		weldJoint.ignore = true;// ignora colisiones con los bodies unidos
 		weldJoint.debugDraw = true;
 		weldJoint.space = space;
@@ -186,8 +149,8 @@ class KamikazeMO2D extends FlxSprite
 	override public function update():Void
 	{
 		super.update();
-		x = body.position.x - this._halfWidth;// * Math.cos(angle * FlxAngle.TO_RAD);
-		y = body.position.y - this._halfHeight;// * Math.sin(angle * FlxAngle.TO_RAD);
+		x = body.position.x - this._halfWidth;
+		y = body.position.y - this._halfHeight;
 		angle = body.rotation * FlxAngle.TO_DEG;
 
 		if (FlxG.mouse.justReleased && countPoints <= pointsForCurve && !banzai)
@@ -221,8 +184,6 @@ class KamikazeMO2D extends FlxSprite
 				drawing = !drawing;
 			}
 		#end
-		
-		FlxG.camera.update();
 	}
 	
 	override public function draw():Void
@@ -274,19 +235,7 @@ class KamikazeMO2D extends FlxSprite
 	{
 		// borra todos los puntos guardados
 		bezierPoints.splice(0, bezierPoints.length);
-		/*
-		var t = 0.0;
-		//var timeAux = HXP.elapsed;
-		while (t <= duration)
-		{
-			var p:flash.geom.Point = bezierMO2D.Calculate(t);
-			bezierPoints.push(new flash.geom.Point(  p.x,p.y));
-			
-			t += timeStep;
-			//t += timeAux;
-		}
-		*/
-		
+
 		var LOD = countPoints * 4;
 		var dt = 1.0 / (LOD - 1.0);
 		var k = 0;
@@ -308,8 +257,7 @@ class KamikazeMO2D extends FlxSprite
 		{
 			var dx:Float = bezierPoints[bp + 1].x - bezierPoints[bp].x;
 			var dy:Float = bezierPoints[bp + 1].y - bezierPoints[bp].y;
-			//bezierPointsAngles.push( -(Math.atan2( dy, dx ) * 180.0 / Math.PI) );
-			bezierPointsAngles.push( (Math.atan2( dy, dx )));// * 180.0 / Math.PI) );
+			bezierPointsAngles.push( (Math.atan2( dy, dx )));
 						
 		}
 		// correccion del angulo para el ultimo punto de la curva
@@ -339,8 +287,6 @@ class KamikazeMO2D extends FlxSprite
 		body.applyImpulse(impulse, null, true);
 		kamikazeLaunched = true;
 		//bodyAux.applyImpulse(impulse, null, true);
-		
-		//FlxG.camera.shake(0.05, 0.5);
 	}
 	
 }

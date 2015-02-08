@@ -23,6 +23,7 @@ class Main extends Sprite {
 			FlxG.debugger.toggleKeys = ["ESCAPE", "SPACE"];
 			FlxG.switchState(new GameNapeState());
 		#else
+			//FlxG.switchState(new MainState());
 			FlxG.switchState(new GameNapeState());
 		#end		
 		

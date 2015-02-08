@@ -8,6 +8,7 @@ import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.addons.nape.FlxNapeState;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import haxe.io.Path;
@@ -31,8 +32,9 @@ class TiledLevel extends TiledMap
 		super(tiledLevel);
 		
 		renderTiles = new FlxGroup();
+		
 		//trace("fullWidth  = "+fullWidth+"  fullHeight  = "+ fullHeight);
-		FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
+		//FlxG.camera.setBounds(0, 0, fullWidth, fullHeight, true);
 		
 		// Cargando los Tile Maps de cada layer
 		LoadTileMapsLayers();
@@ -116,24 +118,54 @@ class TiledLevel extends TiledMap
 			case "kamikaze":
 				//trace(FlxNapeState.space);
 				//state.add(new KamikazeNapeMO2D(obj, FlxNapeState.space));
-				state.add(new KamikazeMO2D(obj, FlxNapeState.space));
+				var kamikaze:KamikazeMO2D = new KamikazeMO2D(obj, FlxNapeState.space);
+				state.add(kamikaze);
+				cast(state, GameNapeState).SetKamikaze(kamikaze);
 			
 			case "floor":
-				LoadFloor(obj);// , state);
+				LoadRect(obj);// , state);
+				
+			case "wall":
+				//var resolve = object.custom.resolve("visible").toString();
+				trace("object.custom.resolve(\"visible\") = "+obj.custom.resolve("visible"));
+				//var strNull:String = "";
+				if (obj.custom.resolve("visible")==null)
+				{
+					LoadRect(obj);
+				}
+				
+			case "box":
+				LoadBox(obj);
+				
+			case "target zoom":
+				var targetZoom = new FlxObject(obj.x, obj.y, obj.width, obj.height);
+				state.add(targetZoom);
+				cast(state, GameNapeState).SetTargetCamera(targetZoom);
+				//FlxG.camera.target = targetZoom;
 				
 			default://nada
 		}
 		
 	}
 	
-	public function LoadFloor(obj:TiledObject):Void//, state:GameNapeState):Void
+	public function LoadRect(obj:TiledObject):Void//, state:GameNapeState):Void
 	{
-		var floor = new Body(BodyType.STATIC);
-		floor.shapes.add(new Polygon(Polygon.rect(obj.x, obj.y, obj.width, obj.height, true)));
-		//floor.shapes.add(new Polygon(Polygon.rect(200, 200, 400, 400, true)));
-		floor.space = FlxNapeState.space;
-		floor.setShapeMaterials(new Material(0.5, 0.2, 0.5, 0.24, 0.001));
-		floor.debugDraw = true;
+		var rect = new Body(BodyType.STATIC);
+		rect.shapes.add(new Polygon(Polygon.rect(obj.x, obj.y, obj.width, obj.height, true)));
+		//rect.shapes.add(new Polygon(Polygon.rect(200, 200, 400, 400, true)));
+		rect.space = FlxNapeState.space;
+		rect.setShapeMaterials(new Material(0.5, 0.2, 0.5, 0.24, 0.001));
+		rect.debugDraw = true;
+	}
+	
+	public function LoadBox(obj:TiledObject):Void
+	{
+		var box = new Body(BodyType.DYNAMIC);
+		box.shapes.add(new Polygon(Polygon.box(obj.width, obj.height, true)));
+		box.position.setxy(obj.x + obj.width * 0.5, obj.y + obj.height * 0.5);
+		box.space = FlxNapeState.space;
+		box.setShapeMaterials(Material.wood());
+		box.align();		
 	}
 	
 }
