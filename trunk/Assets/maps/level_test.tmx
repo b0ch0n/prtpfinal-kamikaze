@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="120" height="90" tilewidth="32" tileheight="32" backgroundcolor="#313131">
+<map version="1.0" orientation="orthogonal" width="120" height="90" tilewidth="32" tileheight="32" backgroundcolor="#ffffff">
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="../graphics/tileset.png" width="192" height="160"/>
  </tileset>
  <tileset firstgid="31" name="entities-tileset" tilewidth="32" tileheight="32">
   <image source="../graphics/entities-tileset.png" trans="55ffff" width="224" height="32"/>
  </tileset>
+ <layer name="layer_death" width="120" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20LL6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIC3AajAAAE=
+  </data>
+ </layer>
+ <layer name="layer_collision" width="120" height="90">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20LL6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIC3AajAAAE=
+  </data>
+ </layer>
  <layer name="layer_render" width="120" height="90">
-  <properties>
-   <property name="tileset" value="tileset"/>
-  </properties>
   <data encoding="base64" compression="zlib">
    eJzt3bFKxAAQRdEtdBv1/39XxJ1mQbfIQE7gniaW1zwGq+D99usNfH7efPfHU3hfz88rvL8c8352wD/ktiE3ym3ZIW8stw25UW7LDnljuW3IjXJbdsgby21DbpTbskPeWG4bcqPclh3yxnLbkBvltuyQN5bbhtwot2WHvLHcNuRGuS075I3ltiE3ym3ZIW8stw25UW7LDnljuW3IjXJbdsgby21DbpTbskPeWG4bcqPclh3yxnLbkBt/2j4ePwvfQz0/v17+Bufr/R3T93nJdel/35L8Tb4RuS0RyDcityUC+UbktkQg34jclgjkG5HbEoF8I3JbIpBvRG5LBPKNyG2JQL4RuS0RyDcityUC+UbktkQg34jclgjkG5HbrqLv847p+7xjen85k/w3RG4bcqPclh3yxnLbkBvltuyQN5bbhtwot2WHvLHcNuRGuS075I3ltiE3ym3ZIW8stw25UW7LDnljuW3IjXJbdsgby21DbpTbskPeWG4bcqPclh3yxnLbkBvltuyQN5bbhtwot2WHvLHcNuRGuS075I3ltiE3ym3ZIW8stw25sf8/eJz+/r4BbfsGhw==
   </data>
  </layer>
  <objectgroup name="objects" width="120" height="90">
-  <object name="followCenter" type="followCenter" x="1920" y="1440" width="32" height="32"/>
-  <object type="kamikaze" gid="36" x="160" y="192"/>
-  <object type="floor" x="1280" y="1888" width="1280" height="32"/>
+  <object name="followCenter" type="followCenter" x="940" y="712" width="32" height="32"/>
+  <object type="kamikaze" gid="36" x="192" y="192"/>
+  <object type="floor" x="0" y="928" width="1280" height="32"/>
  </objectgroup>
  <objectgroup name="level_properties" width="120" height="90" visible="0">
   <object name="gravity" type="gravity" x="0" y="448" width="96" height="32">
