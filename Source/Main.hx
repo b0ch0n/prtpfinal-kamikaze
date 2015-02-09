@@ -5,6 +5,7 @@ import flixel.FlxGame;
 import openfl.display.Sprite;
 import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
+import scenes.GameNapeFlxZoomCamera;
 import scenes.GameNapeState;
 //import scenes.GameState;
 import flixel.system.frontEnds.DebuggerFrontEnd;
@@ -21,7 +22,8 @@ class Main extends Sprite {
 			FlxG.debugger.visible = true;
 			FlxG.debugger.drawDebug = true;
 			FlxG.debugger.toggleKeys = ["ESCAPE", "SPACE"];
-			FlxG.switchState(new GameNapeState());
+			//FlxG.switchState(new GameNapeState());
+			FlxG.switchState(new GameNapeFlxZoomCamera());
 		#else
 			//FlxG.switchState(new MainState());
 			FlxG.switchState(new GameNapeState());

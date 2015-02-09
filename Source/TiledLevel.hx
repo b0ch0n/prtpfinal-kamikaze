@@ -90,7 +90,7 @@ class TiledLevel extends TiledMap
 		}
 	}
 	
-	public function LoadObjects(state:GameNapeState):Void
+	public function LoadObjects(state:FlxNapeState):Void
 	{
 		for (group in objectGroups)
 		{
