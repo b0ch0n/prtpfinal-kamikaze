@@ -1,9 +1,11 @@
 package entities;
 
 import flixel.addons.editors.tiled.TiledObject;
+import flixel.addons.nape.FlxNapeState;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.util.FlxPoint;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxAngle;
 import nape.constraint.WeldJoint;
@@ -83,7 +85,7 @@ class KamikazeMO2D extends FlxSprite
 		body.debugDraw = true;
 		body.mass = 0.75;
 		body.allowMovement = false;
-		body.allowRotation = true;
+		body.allowRotation = false;
 		body.setShapeMaterials(new Material(1, 0.2, 0.5, 0.5, 0.001));
 		body.space = space;
 		
@@ -156,6 +158,20 @@ class KamikazeMO2D extends FlxSprite
 		if (FlxG.mouse.justReleased && countPoints <= pointsForCurve && !banzai)
 		{
 			bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y));
+		 //bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.stage.mouseX, FlxG.stage.mouseY));
+			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.screenX, FlxG.mouse.screenY));
+			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.getWorldPosition().x, FlxG.mouse.getWorldPosition().y));
+			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.getWorldPosition().x/FlxG.camera.zoom, FlxG.mouse.getWorldPosition().y/FlxG.camera.zoom));
+			
+			//var vec2 : Vec2 = FlxNapeState.space.world.worldPointToLocal(new Vec2(FlxG.mouse.x, FlxG.mouse.y));
+			//bezierMO2D.AddControlPoint(new flash.geom.Point(vec2.x, vec2.y));
+			
+			//var vec : flash.geom.Point = new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y);
+			//bezierMO2D.AddControlPoint(FlxG.stage.globalToLocal(vec));
+			
+			//var cp:flash.geom.Point = new flash.geom.Point(this._halfWidth, this._halfHeight);
+			//bezierMO2D.AddControlPoint(cp);
+			
 			bezierMO2D.LoadBezierPoints();
 			countPoints++;
 			
@@ -179,7 +195,7 @@ class KamikazeMO2D extends FlxSprite
 
 		
 		#if debug
-			if (FlxG.keys.justReleased.D)
+			if (FlxG.keys.justReleased.H)
 			{
 				drawing = !drawing;
 			}
@@ -236,7 +252,7 @@ class KamikazeMO2D extends FlxSprite
 		// borra todos los puntos guardados
 		bezierPoints.splice(0, bezierPoints.length);
 
-		var LOD = countPoints * 4;
+		var LOD = countPoints * 4;//10;//
 		var dt = 1.0 / (LOD - 1.0);
 		var k = 0;
 		while (k < LOD)
