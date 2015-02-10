@@ -123,25 +123,18 @@ class TiledLevel extends TiledMap
 				cast(state, GameNapeState).SetKamikaze(kamikaze);
 			
 			case "floor":
-				LoadRect(obj);// , state);
+				LoadRect(obj);
 				
 			case "wall":
-				//var resolve = object.custom.resolve("visible").toString();
-				trace("object.custom.resolve(\"visible\") = "+obj.custom.resolve("visible"));
-				//var strNull:String = "";
-				if (obj.custom.resolve("visible")==null)
-				{
-					LoadRect(obj);
-				}
+				LoadRect(obj);
 				
 			case "box":
-				LoadBox(obj);
+				//LoadBox(obj);
 				
 			case "target zoom":
 				var targetZoom = new FlxObject(obj.x, obj.y, obj.width, obj.height);
 				state.add(targetZoom);
 				cast(state, GameNapeState).SetTargetCamera(targetZoom);
-				//FlxG.camera.target = targetZoom;
 				
 			default://nada
 		}
