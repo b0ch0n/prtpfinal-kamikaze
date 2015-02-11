@@ -5,6 +5,7 @@ import flixel.addons.nape.FlxNapeState;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.system.FlxSound;
 import flixel.util.FlxPoint;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxAngle;
@@ -18,12 +19,16 @@ import nape.space.Space;
 import nape.util.Debug;
 import flash.geom.Point;
 
+import flixel.system.FlxSound;
+
 /**
  * ...
  * @author Marcelo Ruben Guardia
  */
 class KamikazeMO2D extends FlxSprite
 {
+
+	private var snd_banzai:FlxSound;
 	
 	private var bezierMO2D : CurveBezierMO2D = null;
 	private var banzai:Bool = false;
@@ -75,6 +80,8 @@ class KamikazeMO2D extends FlxSprite
 		bezierPoints = new Array<flash.geom.Point>();
 		bezierPointsAngles = new Array < Float >();
 		
+		snd_banzai = new FlxSound();
+		snd_banzai.loadEmbedded(GC.SND_banzai_02);
 	}
 
 	private function SetBodiesNape(obj:TiledObject):Void
@@ -287,7 +294,7 @@ class KamikazeMO2D extends FlxSprite
 		//trace("Baaannnzaaaiii!!!");
 		body.allowMovement = true;
 		body.allowRotation = true;
-		//bodyAux.allowMovement = true;
+		bodyAux.allowMovement = true;
 		var power = 50;
 		var power2 = 10;
 		//var impulse:Vec2 = new Vec2( power * Math.cos( angle * HXP.RAD), power * Math.sin( angle * HXP.RAD));
@@ -303,6 +310,8 @@ class KamikazeMO2D extends FlxSprite
 		body.applyImpulse(impulse, null, true);
 		kamikazeLaunched = true;
 		//bodyAux.applyImpulse(impulse, null, true);
+		
+		snd_banzai.play();
 	}
 	
 }

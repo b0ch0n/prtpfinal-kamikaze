@@ -10,6 +10,7 @@
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="nape" />
+	<haxelib name="format"/>
 	
 	
 	<haxedef name="FLX_NO_GAMEPAD" if="flash" />
@@ -17,6 +18,7 @@
 	<assets path="Assets" rename="assets" exclude="openfl.svg" />
 	<assets path="Assets/maps" rename="maps" include="*.tmx" />
 	<assets path="Assets/graphics" rename="gfx" include="*.png" />
+	<assets path="Assets/audio" rename="audio" include="*.mp3|*.wav" />
 	
 	<icon path="Assets/openfl.svg" />
 	
