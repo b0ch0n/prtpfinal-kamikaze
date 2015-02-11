@@ -47,6 +47,8 @@ class GC
 	public static var SND_tank_shoot:Dynamic = "audio/tank_shoot.mp3";
 	public static var SND_tank_turn:Dynamic = "audio/tank_turn.mp3";
 	public static var SND_tank_walk:Dynamic = "audio/tank_walk.mp3";
+	public static var SND_banzai_01:Dynamic = "audio/banzai-01.mp3";
+	public static var SND_banzai_02:Dynamic = "audio/banzai-02.mp3";
 	
 	
 	static public function GetRadian(angle:Float):Float
