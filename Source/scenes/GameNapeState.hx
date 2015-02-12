@@ -11,6 +11,11 @@ import flixel.FlxObject;
 import flixel.system.scaleModes.BaseScaleMode;
 import flixel.util.FlxColor;
 import flixel.util.FlxPoint;
+import nape.callbacks.CbEvent;
+import nape.callbacks.CbType;
+import nape.callbacks.InteractionCallback;
+import nape.callbacks.InteractionListener;
+import nape.callbacks.InteractionType;
 import nape.geom.AABB;
 import nape.geom.Vec2;
 import nape.space.Space;
@@ -29,50 +34,49 @@ import flixel.input.mouse.FlxMouse;
 import flixel.FlxGame;
 
 
+
+
 /**
  * ...
  * @author ... Marcelo Ruben Guardia
  */
 class GameNapeState extends FlxNapeState
 {
+	public var tiledLevel:TiledLevel;
+	
+	// variables para configurar las colisiones
+	private var interactionListener:InteractionListener;
+ static public var wallCollisionType:CbType = new CbType();
+	private var kamikazeCollisionType:CbType = new CbType();
+	
+	
 	private var canvas:FlxSprite;
 	private var levels:Array < String >;
 	private var currentLevel:Int;
-	public var tiledLevel:TiledLevel;	
-	//private var zoom:Float = 5.0;// 0.5;
-	
-	//private var minZoom:Float = 2.0;
-	//private var maxZoom:Float = 5.0;
-	//private var deltaZoom:Float = 1.0;
-	
-	//private var countZoom:Int = 0;
-	
 	private var zoomCamera:FlxZoomCamera;
-	
 	private var kamikaze:KamikazeMO2D;
 	private var targetCamera:FlxObject;
+	
+	private var slowFlxTime = 0.1;
+	private var slowNapeStep = 0.1;
+	private var normalTimeScale = 1.0;
+	static public var normalNapeStep = 1/60.0;
 
 	override public function create():Void
 	{
 		super.create();
-		//FlxNapeState.space.world.allowMovement = true;
-		
-		
-		//zoomCamera = new FlxZoomCamera(0, 0, 3840, 2880, 1.0);// 640, 480);
+		/*
 		var factor = 6;
 		zoomCamera = new FlxZoomCamera(0, 0, 640*factor, 480*factor, 1.0);// 640, 480);
-		//FlxG.cameras.reset(zoomCamera);
-		//
-		//FlxG.camera.zoom = 3.0;
-		//if (FlxG.fullscreen)
-			//FlxG.camera.zoom = 9.0;
-		//
+		FlxG.cameras.reset(zoomCamera);
+		*/
+		FlxG.camera.zoom = 9.0;
+		
 		canvas = new FlxSprite();// FlxG.camera.x, FlxG.camera.y);//FlxG.game.x, FlxG.game.y);//
 		//canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.ROYAL_BLUE);// .TRANSPARENT);
 		canvas.loadGraphic("gfx/backgrounds/bg_01.png");
 		canvas.scale.set( 2.0, 2.0);
 		canvas.setPosition(320.0, 240.0);
-		//canvas.makeGraphic(3840, 2880, FlxColor.ROYAL_BLUE);// .TRANSPARENT);
 		add(canvas);
 		
 
@@ -105,6 +109,21 @@ class GameNapeState extends FlxNapeState
 		// asignando la capa del grupo correspondiente
 		//LoadUI();
 
+		
+		// Configuracion de las colisiones
+		interactionListener = new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, wallCollisionType, kamikazeCollisionType, kamikazeToWall);
+		FlxNapeState.space.listeners.add(interactionListener);
+		
+		kamikaze.SetCbType(kamikazeCollisionType);// despues tengo que hacer lo mismo pero con sensor para juntar items
+	}
+	
+	public function kamikazeToWall(collision:InteractionCallback):Void
+	{
+		trace("collision.int1.toString() = " + collision.int1.toString());
+		
+		trace("collision.int2.toString() = " + collision.int2.toString());
+		
+		kamikaze.destroy();// .active = false;
 	}
 	
 	// static public para que se pueda acceder con GameNapeState.SetKamikaze
@@ -139,24 +158,74 @@ class GameNapeState extends FlxNapeState
 		if (FlxG.mouse.wheel != 0)
 		 ZoomWheel();
 
+		if (FlxG.keys.pressed.S)
+		{
+			//trace("S");
+			FlxG.timeScale = slowFlxTime;
+			FlxNapeState.space.step(slowNapeStep * normalNapeStep);
+			//trace("FlxG.timeScale = "+FlxG.timeScale+"   FlxG.elapsed = "+FlxG.elapsed+"   FlxG.maxElapsed = "+FlxG.maxElapsed);
+		}
+		else
+		{
+			//trace("FlxG.timeScale = "+FlxG.timeScale+"   FlxG.elapsed = "+FlxG.elapsed+"   FlxG.maxElapsed = "+FlxG.maxElapsed);
+			FlxG.timeScale = normalTimeScale;
+			FlxNapeState.space.step(normalNapeStep);
+		}
+		/*
 		MoveCamera(32);
 		
 		if (FlxG.mouse.justReleasedRight)
 			MouseOnClick();
 		
-		MoveScreen(5);
-		
+		MoveScreen(5);		
 		//MousePositions();
 		
 		//zoomCamera.update();
-		//FlxG.camera.follow(targetCamera);
-		
+		//FlxG.camera.follow(targetCamera);		
 
 		MoveCanvas();
 		MoveStage();
-		//zoomCamera.focusOn(new FlxPoint(targetCamera.x, targetCamera.y));
+		*/
 	}
 	
+	override public function draw():Void
+	{
+		super.draw();
+		
+		//FlxSpriteUtil.drawRect(this, FlxG.stage.x, FlxG.stage.y, FlxG.stage.width, FlxG.stage.height, FlxColor.CYAN, LineStyle, FillStyle, DrawStyle);
+	}
+	
+	public function ZoomWheel():Void
+	{
+		/* FlxG.camera.zoom  ||  FlxG.camera.x   ||   FlxG.camera.y
+			*      3            ||      -3840       ||      -2880
+			*      2.75         ||      -3360       ||      -2400
+			*      2.5          ||      -2880       ||      -1920
+			*      2.25         ||      -2400       ||      -1440
+			*      2.0          ||      -1920       ||      -960
+			*      1.75         ||      -1440       ||      -480
+			*      1.5          ||       -960       ||         0
+			*      1.25         ||       -480       ||       480
+			*      1.0          ||          0       ||       960
+			* */
+		
+		var deltaZoom = 0.25;
+		deltaZoom *= (FlxG.mouse.wheel > 0) ? 1.0 : -1.0;
+		//zoomCamera.targetZoom += deltaZoom;
+		FlxG.camera.zoom += deltaZoom;
+
+		trace("FlxG.camera.zoom = " + FlxG.camera.zoom);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*----------Metodos de testeo--------------*/
 	public function MoveStage():Void
 	{
 		if (FlxG.keys.pressed.F)
@@ -235,15 +304,6 @@ class GameNapeState extends FlxNapeState
 		}
 	}
 	
-	override public function draw():Void
-	{
-		super.draw();
-		
-		//FlxSpriteUtil.drawRect(this, FlxG.stage.x, FlxG.stage.y, FlxG.stage.width, FlxG.stage.height, FlxColor.CYAN, LineStyle, FillStyle, DrawStyle);
-		//FlxSpriteUtil.drawRect( asdf, FlxG.stage.x, FlxG.stage.y, FlxG.stage.width, FlxG.stage.height, FlxColor.CYAN);// , LineStyle, FillStyle, DrawStyle);
-		//FlxNapeState.get_debug().drawAABB(FlxNapeState.space.world.bounds, FlxColor.BLACK);
-	}
-	
 	public function MouseOnClick():Void
 	{
 		trace("FlxG.camera.zoom = "+FlxG.camera.zoom+"  FlxG.stage.scaleX = "+FlxG.stage.scaleX+"  FlxG.stage.scaleY = "+FlxG.stage.scaleY);
@@ -269,35 +329,12 @@ class GameNapeState extends FlxNapeState
 		trace("");
 	}
 	
-	public function ZoomWheel():Void
-	{
-		/* FlxG.camera.zoom  ||  FlxG.camera.x   ||   FlxG.camera.y
-			*      3            ||      -3840       ||      -2880
-			*      2.75         ||      -3360       ||      -2400
-			*      2.5          ||      -2880       ||      -1920
-			*      2.25         ||      -2400       ||      -1440
-			*      2.0          ||      -1920       ||      -960
-			*      1.75         ||      -1440       ||      -480
-			*      1.5          ||       -960       ||         0
-			*      1.25         ||       -480       ||       480
-			*      1.0          ||          0       ||       960
-			* */
-		
-		var deltaZoom = 0.25;
-		deltaZoom *= (FlxG.mouse.wheel > 0) ? 1.0 : -1.0;
-		//zoomCamera.targetZoom += deltaZoom;
-		FlxG.camera.zoom += deltaZoom;
-
-		trace("FlxG.camera.zoom = " + FlxG.camera.zoom);
-	}
-	
 	public function MoveCamera(delta:Int):Void
 	{
 		var moving:Bool = false;
 		if (FlxG.keys.justReleased.LEFT)
 		{
 			FlxG.camera.x += delta;
-			//FlxG.camera.screen.setPosition(FlxG.camera.screen.x + delta, FlxG.camera.screen.y);
 			moving = true;
 		}
 		

@@ -16,19 +16,22 @@
  </layer>
  <objectgroup name="objects" width="0" height="0">
   <object name="exit" type="exit" x="640" y="896" width="32" height="32"/>
-  <object type="kamikaze" gid="36" x="128" y="608"/>
+  <object type="kamikaze" gid="36" x="128" y="128"/>
   <object type="floor" x="0" y="928" width="1280" height="32"/>
   <object type="wall" x="0" y="32" width="32" height="896"/>
-  <object type="box" x="352" y="864" width="32" height="32"/>
-  <object type="box" x="128" y="864" width="32" height="32"/>
-  <object type="box" x="128" y="896" width="32" height="32"/>
-  <object type="box" x="352" y="896" width="32" height="32"/>
-  <object type="box" x="352" y="832" width="32" height="32"/>
+  <object type="box" x="512" y="864" width="32" height="32"/>
   <object type="box" x="128" y="832" width="32" height="32"/>
+  <object type="box" x="128" y="896" width="32" height="32"/>
+  <object type="box" x="512" y="896" width="32" height="32"/>
+  <object type="box" x="512" y="832" width="32" height="32"/>
+  <object type="box" x="128" y="864" width="32" height="32"/>
   <object name="1" type="zoom" x="-480" y="-320" width="1280" height="960" visible="0"/>
   <object name="target zoom" type="target zoom" gid="25" x="640" y="512"/>
   <object type="wall" x="1248" y="32" width="32" height="896"/>
   <object type="floor" x="0" y="0" width="1280" height="32"/>
+  <object type="box" x="704" y="832" width="96" height="96"/>
+  <object type="box" x="832" y="800" width="128" height="128"/>
+  <object type="box" x="992" y="768" width="160" height="160"/>
  </objectgroup>
  <objectgroup name="level_properties" width="0" height="0" visible="0">
   <object name="gravity" type="gravity" x="0" y="448" width="96" height="32">

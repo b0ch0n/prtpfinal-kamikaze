@@ -1,5 +1,6 @@
 package ;
 
+import entities.breakable.BoxNape;
 import entities.KamikazeMO2D;
 import entities.KamikazeNapeMO2D;
 import flixel.addons.editors.tiled.TiledMap;
@@ -130,6 +131,7 @@ class TiledLevel extends TiledMap
 				
 			case "box":
 				//LoadBox(obj);
+				state.add(new BoxNape(obj));
 				
 			case "target zoom":
 				var targetZoom = new FlxObject(obj.x, obj.y, obj.width, obj.height);
@@ -147,8 +149,9 @@ class TiledLevel extends TiledMap
 		rect.shapes.add(new Polygon(Polygon.rect(obj.x, obj.y, obj.width, obj.height, true)));
 		//rect.shapes.add(new Polygon(Polygon.rect(200, 200, 400, 400, true)));
 		rect.space = FlxNapeState.space;
-		rect.setShapeMaterials(new Material(0.5, 0.2, 0.5, 0.24, 0.001));
+		rect.setShapeMaterials(new Material(0, 0.2, 0.5, 0.24, 0.001));
 		rect.debugDraw = true;
+		rect.cbTypes.add(GameNapeState.wallCollisionType);
 	}
 	
 	public function LoadBox(obj:TiledObject):Void
