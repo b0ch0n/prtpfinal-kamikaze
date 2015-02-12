@@ -27,12 +27,14 @@ class GC
 	public static var IMG_red_point_32:Dynamic = "gfx/red-point-32.png";
 	public static var IMG_green_point_16:Dynamic = "gfx/green-point-16.png";
 	public static var IMG_blue_point:Dynamic = "gfx/blue-point.png";
+	public static var IMG_breakable_1:Dynamic = "gfx/box/rompible1.png";
+	public static var IMG_breakable_2:Dynamic = "gfx/box/rompible2.png";
+	public static var IMG_breakable_3:Dynamic = "gfx/box/rompible3.png";
+	public static var IMG_breakable_4:Dynamic = "gfx/box/rompible4.png";
+	public static var IMG_breakable_5:Dynamic = "gfx/box/rompible5.png";
+	public static var IMG_breakable_6:Dynamic = "gfx/box/rompible6.png";
 	
-	public static var IMG_bala_tanque:Dynamic = "gfx/bala-tanque.png";
-	public static var IMG_fx_disparo:Dynamic = "gfx/disparo.png";
-	public static var IMG_explosion:Dynamic = "gfx/explosion.png";
-	public static var IMG_momia:Dynamic = "gfx/mummy.png";
-	public static var IMG_momia_generador:Dynamic = "gfx/caras.png";
+	// sprites para renombrar
 	public static var IMG_tnt:Dynamic = "gfx/tnt.png";
 	public static var IMG_helicoptero:Dynamic = "gfx/helicoptero.png";
 	public static var IMG_tanque:Dynamic = "gfx/tanque.png";

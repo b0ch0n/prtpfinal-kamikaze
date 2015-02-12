@@ -6,9 +6,11 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxSound;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxPoint;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxAngle;
+import nape.callbacks.CbType;
 import nape.constraint.WeldJoint;
 import nape.geom.Vec2;
 import nape.phys.Body;
@@ -18,6 +20,7 @@ import nape.shape.Polygon;
 import nape.space.Space;
 import nape.util.Debug;
 import flash.geom.Point;
+import scenes.GameNapeState;
 
 import flixel.system.FlxSound;
 
@@ -29,6 +32,8 @@ class KamikazeMO2D extends FlxSprite
 {
 
 	private var snd_banzai:FlxSound;
+	
+	private var moveBodyTween:FlxTween;
 	
 	private var bezierMO2D : CurveBezierMO2D = null;
 	private var banzai:Bool = false;
@@ -82,6 +87,8 @@ class KamikazeMO2D extends FlxSprite
 		
 		snd_banzai = new FlxSound();
 		snd_banzai.loadEmbedded(GC.SND_banzai_02);
+		
+		//moveBodyTween = new FlxTween();
 	}
 
 	private function SetBodiesNape(obj:TiledObject):Void
@@ -89,12 +96,15 @@ class KamikazeMO2D extends FlxSprite
 		// body heredado de NapeEntity
 		body = new Body(BodyType.DYNAMIC);
 		body.position.setxy(obj.x, obj.y);
-		body.debugDraw = true;
 		body.mass = 0.75;
 		body.allowMovement = false;
 		body.allowRotation = false;
 		body.setShapeMaterials(new Material(1, 0.2, 0.5, 0.5, 0.001));
 		body.space = space;
+		body.isBullet = true;
+		#if debug
+			body.debugDraw = true;
+		#end
 		
 		var localVerts:Array<Vec2> = new Array<Vec2>();
 
@@ -134,9 +144,16 @@ class KamikazeMO2D extends FlxSprite
 		bodyAux.allowMovement = true;// false;
 		bodyAux.mass = 0.2;
 		bodyAux.space = space;
+		bodyAux.isBullet = true;
 		
 		// uniendo los bodies
 		WeldJointBodies(obj);
+	}
+	
+	public function SetCbType(cbType:CbType):Void
+	{
+		body.cbTypes.add(cbType);
+		bodyAux.cbTypes.add(cbType);
 	}
 	
 	public function WeldJointBodies(obj:TiledObject=null):Void
@@ -151,13 +168,16 @@ class KamikazeMO2D extends FlxSprite
 		anchor.dispose();
 		weldJoint.stiff = true;// true o false;// union rigida o elastica
 		weldJoint.ignore = true;// ignora colisiones con los bodies unidos
-		weldJoint.debugDraw = true;
 		weldJoint.space = space;
+		#if debug
+			weldJoint.debugDraw = true;
+		#end		
 	}
 
 	override public function update():Void
 	{
 		super.update();
+		
 		x = body.position.x - this._halfWidth;
 		y = body.position.y - this._halfHeight;
 		angle = body.rotation * FlxAngle.TO_DEG;
@@ -165,26 +185,14 @@ class KamikazeMO2D extends FlxSprite
 		if (FlxG.mouse.justReleased && countPoints <= pointsForCurve && !banzai)
 		{
 			bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y));
-		 //bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.stage.mouseX, FlxG.stage.mouseY));
-			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.screenX, FlxG.mouse.screenY));
-			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.getWorldPosition().x, FlxG.mouse.getWorldPosition().y));
-			//bezierMO2D.AddControlPoint(new flash.geom.Point(FlxG.mouse.getWorldPosition().x/FlxG.camera.zoom, FlxG.mouse.getWorldPosition().y/FlxG.camera.zoom));
-			
-			//var vec2 : Vec2 = FlxNapeState.space.world.worldPointToLocal(new Vec2(FlxG.mouse.x, FlxG.mouse.y));
-			//bezierMO2D.AddControlPoint(new flash.geom.Point(vec2.x, vec2.y));
-			
-			//var vec : flash.geom.Point = new flash.geom.Point(FlxG.mouse.x, FlxG.mouse.y);
-			//bezierMO2D.AddControlPoint(FlxG.stage.globalToLocal(vec));
-			
-			//var cp:flash.geom.Point = new flash.geom.Point(this._halfWidth, this._halfHeight);
-			//bezierMO2D.AddControlPoint(cp);
-			
+
 			bezierMO2D.LoadBezierPoints();
 			countPoints++;
 			
 			if (countPoints == pointsForCurve && !banzai)
 			{
 				banzai = true;
+				snd_banzai.play();
 			}
 		}
 		else
@@ -193,20 +201,15 @@ class KamikazeMO2D extends FlxSprite
 			if (!kamikazeLaunched)
 				MoveOnBezier();
 		}
-		
-		//trace("body.kinematicVel = " + body.kinematicVel + "  body.inertia = " + body.inertia + "  body.gravMass = " + body.gravMass);
-		//trace("body.localCOM = " + body.localCOM + "  body.mass = " + body.mass + "  body.space = " + body.space);
-		//trace("body.velocity = " + body.velocity + "  body.type = " + body.type + "  body.constraintVelocity = " + body.constraintVelocity);
-		//trace("body.space.elapsedTime = " + body.space.elapsedTime + "  body.space.gravity = " + body.space.gravity);
-		//trace("");
 
-		
 		#if debug
 			if (FlxG.keys.justReleased.H)
 			{
 				drawing = !drawing;
 			}
 		#end
+		
+				
 	}
 	
 	override public function draw():Void
@@ -214,9 +217,7 @@ class KamikazeMO2D extends FlxSprite
 		if (drawing)
 			super.draw();
 		
-		bezierMO2D.draw();
-		
-		//FlxSpriteUtil.drawRect(this, FlxG.stage.x, FlxG.stage.y, FlxG.stage.width, FlxG.stage.height, FlxColor.CYAN, LineStyle, FillStyle, DrawStyle);
+		bezierMO2D.draw();		
 	}
 
 	public function MoveOnBezier():Void
@@ -225,15 +226,11 @@ class KamikazeMO2D extends FlxSprite
 		{
 			if (indexBezierPoint < bezierPoints.length)
 			{
-				//moveTo(bezierPoints[indexBezierPoint].x, bezierPoints[indexBezierPoint].y);
-				
-				body.position.setxy(	bezierPoints[indexBezierPoint].x,	bezierPoints[indexBezierPoint].y);
-				
-				//spKamikaze.angle = bezierPointsAngles[indexBezierPoint];
+				// indico la posicion y rotacion que debe tomar en cada punto
+				body.position.setxy(	bezierPoints[indexBezierPoint].x,	bezierPoints[indexBezierPoint].y);			
 				body.rotation = bezierPointsAngles[indexBezierPoint];
 				indexBezierPoint++;
 				
-				//trace("angle = " + angle);// * HXP.RAD);
 				if (indexBezierPoint >= bezierPoints.length)
 				{
 					LaunchKamikaze();
@@ -259,7 +256,7 @@ class KamikazeMO2D extends FlxSprite
 		// borra todos los puntos guardados
 		bezierPoints.splice(0, bezierPoints.length);
 
-		var LOD = countPoints * 4;//10;//
+		var LOD = countPoints * 20;//4;//
 		var dt = 1.0 / (LOD - 1.0);
 		var k = 0;
 		while (k < LOD)
@@ -311,7 +308,7 @@ class KamikazeMO2D extends FlxSprite
 		kamikazeLaunched = true;
 		//bodyAux.applyImpulse(impulse, null, true);
 		
-		snd_banzai.play();
+		//snd_banzai.play();
 	}
 	
 }
