@@ -40,10 +40,12 @@ class KamikazeMO2D extends FlxSprite
 	private var kamikazeLaunched:Bool = false;
 	private var bezierPointsLoaded:Bool = false;
 	private var drawing:Bool = true;
+	private var slowMotion:Bool = false;
 	private var spKamikaze : FlxSprite;
-	private var pointsForCurve : Int = 3;
+	private var pointsForCurve : Int = 2;
 	private var countPoints : Int = 0;
 	private var bezierPoints : Array<flash.geom.Point>;
+	private var slowMotionPoints : Array<flash.geom.Point>;
 	private var bezierPointsAngles:Array<Float>;
 	private var duration:Float = 1.0;
 	private var timeBezier:Float = 0.0;
@@ -52,6 +54,7 @@ class KamikazeMO2D extends FlxSprite
 	
 	private var body:Body;
 	private var bodyAux:Body;
+	private var weldJoint:WeldJoint;
 	private var debugNape:Debug;
 	private var space:Space;
 	
@@ -83,6 +86,7 @@ class KamikazeMO2D extends FlxSprite
 		
 		countPoints++;
 		bezierPoints = new Array<flash.geom.Point>();
+		slowMotionPoints = new Array<flash.geom.Point>();
 		bezierPointsAngles = new Array < Float >();
 		
 		snd_banzai = new FlxSound();
@@ -109,17 +113,17 @@ class KamikazeMO2D extends FlxSprite
 		var localVerts:Array<Vec2> = new Array<Vec2>();
 
 		// vertices de la cabina del avion
-		localVerts.push(new Vec2(27, 5));
-		localVerts.push(new Vec2(10, -12));
-		localVerts.push(new Vec2(-6, -12));
+		localVerts.push(new Vec2(40, 5));
+		localVerts.push(new Vec2(23, -12));
+		localVerts.push(new Vec2(7, -12));
 		
-		localVerts.push(new Vec2( -18, -3));
-		localVerts.push(new Vec2( -18, 17));
+		localVerts.push(new Vec2( -10, -7));
+		localVerts.push(new Vec2( -10, 17));
 		
-		localVerts.push(new Vec2(-7, 19));		
-		localVerts.push(new Vec2(2, 19));		
-		localVerts.push(new Vec2(19, 17));		
-		localVerts.push(new Vec2(27, 5));		
+		localVerts.push(new Vec2(10, 19));		
+		localVerts.push(new Vec2(15, 19));		
+		localVerts.push(new Vec2(32, 17));		
+		localVerts.push(new Vec2(40, 5));		
 		
 		body.shapes.add(new Polygon(localVerts));
 		
@@ -130,13 +134,13 @@ class KamikazeMO2D extends FlxSprite
 		localVerts.splice(0, localVerts.length);// vaciando el array de vertices
 		
 		// vertices de la cola del avion
-		localVerts.push(new Vec2( -18, -3));
+		localVerts.push(new Vec2( -10, -7));
 		
-		localVerts.push(new Vec2( -48, -12));
-		localVerts.push(new Vec2( -53, 5));
+		localVerts.push(new Vec2( -32, -15));
+		localVerts.push(new Vec2( -40, 5));
 		
-		localVerts.push(new Vec2( -18, 17));		
-		localVerts.push(new Vec2( -18, -3));
+		localVerts.push(new Vec2( -10, 17));		
+		localVerts.push(new Vec2( -10, -7));
 		
 		bodyAux.shapes.add(new Polygon(localVerts));
 		// Material(elasticity=0, dynamicFriction=1, staticFriction=2, density=1, rollingFriction=0.001));//default values
@@ -156,14 +160,23 @@ class KamikazeMO2D extends FlxSprite
 		bodyAux.cbTypes.add(cbType);
 	}
 	
+	public function SetSlowMotion(slow_motion:Bool):Void
+	{
+		slowMotion = slow_motion;
+	}
+	
 	public function WeldJointBodies(obj:TiledObject=null):Void
 	{
-		var anchor = new Vec2();
-		var weldJoint = new WeldJoint(
+		//var anchor = new Vec2();
+		//var anchor = new Vec2((body.position - bodyAux.position) / 2.0);
+		var anchor = new Vec2(obj.x, obj.y);
+		weldJoint = new WeldJoint(
 		body,
 		bodyAux,
 		body.worldPointToLocal(anchor, true),
+		//body.position,//.localPointToWorld(anchor, true),
 		bodyAux.worldPointToLocal(anchor, true)
+		//bodyAux.position//.localPointToWorld(anchor, true)
 		);
 		anchor.dispose();
 		weldJoint.stiff = true;// true o false;// union rigida o elastica
@@ -201,6 +214,11 @@ class KamikazeMO2D extends FlxSprite
 			if (!kamikazeLaunched)
 				MoveOnBezier();
 		}
+		else
+		if (countPoints == 1)
+		{
+			body.rotation = FlxAngle.angleBetweenMouse(this);// , true);
+		}
 
 		#if debug
 			if (FlxG.keys.justReleased.H)
@@ -215,9 +233,10 @@ class KamikazeMO2D extends FlxSprite
 	override public function draw():Void
 	{
 		if (drawing)
+		{
 			super.draw();
-		
-		bezierMO2D.draw();		
+			bezierMO2D.draw();
+		}		
 	}
 
 	public function MoveOnBezier():Void
@@ -226,10 +245,17 @@ class KamikazeMO2D extends FlxSprite
 		{
 			if (indexBezierPoint < bezierPoints.length)
 			{
-				// indico la posicion y rotacion que debe tomar en cada punto
-				body.position.setxy(	bezierPoints[indexBezierPoint].x,	bezierPoints[indexBezierPoint].y);			
-				body.rotation = bezierPointsAngles[indexBezierPoint];
-				indexBezierPoint++;
+				if (slowMotion)
+				{
+					LoadSlowMotionPoints();
+				}
+				else
+				{
+					// indico la posicion y rotacion que debe tomar en cada punto
+					body.position.setxy(	bezierPoints[indexBezierPoint].x,	bezierPoints[indexBezierPoint].y);			
+					body.rotation = bezierPointsAngles[indexBezierPoint];
+					indexBezierPoint++;
+				}
 				
 				if (indexBezierPoint >= bezierPoints.length)
 				{
@@ -271,6 +297,33 @@ class KamikazeMO2D extends FlxSprite
 		}
 	}
 	
+	public function LoadSlowMotionPoints():Void
+	{
+		if (indexBezierPoint < bezierPoints.length)
+		{
+			/*
+			Tengo que guardar las posiciones desde un punto inicial(pi)
+			hasta un punto final(pf) con un desplazamiento igual al
+			espacio recorrido en el tiempo FlxG.elapsed sobre la recta
+		 que une los dos puntos
+			
+			 x - xi  =   y - yi
+			_______     _______
+			xf - xi     yf - yi
+			*/
+
+			var pi = bezierPoints[indexBezierPoint];
+			var pf = bezierPoints[indexBezierPoint + 1];
+			var auxPoints:Array<flash.geom.Point> = new Array<flash.geom.Point>();
+			auxPoints.push(pi);
+			auxPoints.push(pf);
+			
+			var dt:Float = 0.05 / 0.0016;// FlxG.elapsed;
+			trace("dt = "+dt);
+			
+		}
+	}
+
 	public function LoadBezierPointsAngles():Void
 	{
 		for (bp in 0...(bezierPoints.length-1))
@@ -309,6 +362,15 @@ class KamikazeMO2D extends FlxSprite
 		//bodyAux.applyImpulse(impulse, null, true);
 		
 		//snd_banzai.play();
+	}
+	
+	override public function destroy():Void
+	{
+		//trace("destroy()");
+		super.destroy();
+		//space.bodies.remove(body);
+		//space.bodies.remove(bodyAux);
+		//space.constraints.remove(weldJoint);
 	}
 	
 }

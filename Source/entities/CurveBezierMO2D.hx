@@ -26,10 +26,17 @@ class CurveBezierMO2D extends FlxObject
 	
 	// Array que contiene los puntos de la curva de bezier
 	private var bezierPoints : Array<flash.geom.Point>;	
+	// Array que contiene los puntos de un segmento cuando hay slowMotion
+	private var slowMotionPoints : Array<flash.geom.Point>;	
+	
 	// Array que contiene las posiciones de los puntos de la curva de bezier
 	private var greenPointPositions : Array<flash.geom.Point>;	
 	
 	private var duration : Int = 1;
+	/**
+	 * Delta del tiempo que hay entre un punto de la curva y otro
+	 */
+	private var delta_t_bezierPoints:Float = 0.05;
 	
 	private var Q : Array<flash.geom.Point>;
 	private var N:Int = 0;
@@ -45,6 +52,7 @@ class CurveBezierMO2D extends FlxObject
 		controlPoints = new Array<flash.geom.Point>();
 		redPointPositions = new Array<flash.geom.Point>();
 		bezierPoints = new Array<flash.geom.Point>();
+		slowMotionPoints = new Array<flash.geom.Point>();
 		greenPointPositions = new Array<flash.geom.Point>();
 		Q = new Array<flash.geom.Point>();
 		AddControlPoint(new flash.geom.Point(x, y));
@@ -61,6 +69,7 @@ class CurveBezierMO2D extends FlxObject
 		//trace("controlPoints.length = "+controlPoints.length);
 	}
 	
+
 	public function LoadBezierPoints():Void
 	{
 		// borra todos los puntos guardados
@@ -75,38 +84,53 @@ class CurveBezierMO2D extends FlxObject
 			bezierPoints.push(bp);
 			greenPointPositions.push(new flash.geom.Point(bp.x - greenPoint.width * 0.5, bp.y - greenPoint.height * 0.5));
 						
-			t += 0.05;
+			t += delta_t_bezierPoints;// 0.05;
 		}
-		
-		//for (bp in 0...bezierPoints.length)
-		//{
-			//trace("bezierPoints[bp] = "+bezierPoints[bp]);
-		//}
 	}
-	
-	override public function draw():Void
-	{
-		//super.draw();
-		
-		// dibujo cada punto de control
-		for (cp in 0...controlPoints.length)
-		{
-			//redPoint.setPosition(controlPoints[cp].x - redPoint.width*0.5, controlPoints[cp].y - redPoint.height*0.5);
-			redPoint.setPosition(redPointPositions[cp].x, redPointPositions[cp].y);
-			redPoint.draw();
-		}
 
-		// si hay mas de 1 punto de control
-		if (controlPoints.length > 1)
+	
+	/*
+	public function LoadSlowMotionPoints():Void
+	{
+		// vaciado del array que contiene los puntos
+		slowMotionPoints.splice(0, slowMotionPoints.length);
+		
+		var t:Float = 0.0;
+		var delta_t_slow_motion = FlxG.elapsed;// tiempo que se debe calcular entre el punto actual y el siguiente
+		var smp;
+		while (t <= delta_t_bezierPoints)
 		{
-			// dibujo el recorrido de la curva de bezier
-			for (p in 1...bezierPoints.length)
+			smp = CalculateSlowMotionPoint(t);
+			slowMotionPoints.push(smp);
+			
+			t += delta_t_slow_motion;
+		}
+	}
+	*/
+	
+	public function CalculateSlowMotionPoint(t : Float, points:Array<flash.geom.Point>):flash.geom.Point
+	{
+		N = points.length;
+		
+		for (i in 0...N)
+		{
+			Q.push(new flash.geom.Point(points[i].x,points[i].y)); // primera columna de la cunia
+			//trace("points[i] = "+points[i]+"          Q[i] = "+Q[i]);
+		}
+		
+		for (k in 1...N)//por cada columna siguiente de la cunia
+		{
+			for (i in 0...(N-k))
 			{
-				//greenPoint.setPosition(bezierPoints[p].x - greenPoint.width*0.5, bezierPoints[p].y - greenPoint.height*0.5);
-				greenPoint.setPosition(greenPointPositions[p].x, greenPointPositions[p].y);
-				greenPoint.draw();
+						Q[i].x = (1 - t) * Q[i].x + t * Q[i + 1].x;//calculo del punto C en el ratio (1-t):t
+						Q[i].y = (1 - t) * Q[i].y + t * Q[i + 1].y;
 			}
-		}		
+		}
+		
+		var pc_t : flash.geom.Point = new flash.geom.Point(Q[0].x, Q[0].y);
+		Q.splice(0, Q.length);
+		
+		return pc_t;
 	}
 
 	/**
@@ -137,5 +161,29 @@ class CurveBezierMO2D extends FlxObject
 		return pc_t;
 	}
 	
+	override public function draw():Void
+	{
+		//super.draw();
+		
+		// dibujo cada punto de control
+		for (cp in 0...controlPoints.length)
+		{
+			//redPoint.setPosition(controlPoints[cp].x - redPoint.width*0.5, controlPoints[cp].y - redPoint.height*0.5);
+			redPoint.setPosition(redPointPositions[cp].x, redPointPositions[cp].y);
+			redPoint.draw();
+		}
+
+		// si hay mas de 1 punto de control
+		if (controlPoints.length > 1)
+		{
+			// dibujo el recorrido de la curva de bezier
+			for (p in 1...bezierPoints.length)
+			{
+				//greenPoint.setPosition(bezierPoints[p].x - greenPoint.width*0.5, bezierPoints[p].y - greenPoint.height*0.5);
+				greenPoint.setPosition(greenPointPositions[p].x, greenPointPositions[p].y);
+				greenPoint.draw();
+			}
+		}		
+	}
 
 }
