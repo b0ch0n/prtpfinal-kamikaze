@@ -70,13 +70,15 @@ class GameNapeState extends FlxNapeState
 		zoomCamera = new FlxZoomCamera(0, 0, 640*factor, 480*factor, 1.0);// 640, 480);
 		FlxG.cameras.reset(zoomCamera);
 		*/
+		
 		FlxG.camera.zoom = 9.0;
+		//FlxG.camera.zoom = 30.0;
 		
 		canvas = new FlxSprite();// FlxG.camera.x, FlxG.camera.y);//FlxG.game.x, FlxG.game.y);//
 		//canvas.makeGraphic(FlxG.width, FlxG.height, FlxColor.ROYAL_BLUE);// .TRANSPARENT);
 		canvas.loadGraphic("gfx/backgrounds/bg_01.png");
-		canvas.scale.set( 2.0, 2.0);
-		canvas.setPosition(320.0, 240.0);
+		canvas.scale.set( 3.0, 3.0);
+		canvas.setPosition(320.0, 256.0);
 		add(canvas);
 		
 
@@ -119,9 +121,9 @@ class GameNapeState extends FlxNapeState
 	
 	public function kamikazeToWall(collision:InteractionCallback):Void
 	{
-		trace("collision.int1.toString() = " + collision.int1.toString());
+		//trace("collision.int1.toString() = " + collision.int1.toString());
 		
-		trace("collision.int2.toString() = " + collision.int2.toString());
+		//trace("collision.int2.toString() = " + collision.int2.toString());
 		
 		kamikaze.destroy();// .active = false;
 	}
@@ -163,6 +165,9 @@ class GameNapeState extends FlxNapeState
 			//trace("S");
 			FlxG.timeScale = slowFlxTime;
 			FlxNapeState.space.step(slowNapeStep * normalNapeStep);
+			kamikaze.SetSlowMotion(true);
+			if (FlxG.keys.justPressed.S)
+				kamikaze.LoadSlowMotionPoints();
 			//trace("FlxG.timeScale = "+FlxG.timeScale+"   FlxG.elapsed = "+FlxG.elapsed+"   FlxG.maxElapsed = "+FlxG.maxElapsed);
 		}
 		else
@@ -170,6 +175,7 @@ class GameNapeState extends FlxNapeState
 			//trace("FlxG.timeScale = "+FlxG.timeScale+"   FlxG.elapsed = "+FlxG.elapsed+"   FlxG.maxElapsed = "+FlxG.maxElapsed);
 			FlxG.timeScale = normalTimeScale;
 			FlxNapeState.space.step(normalNapeStep);
+			kamikaze.SetSlowMotion(false);
 		}
 		/*
 		MoveCamera(32);
