@@ -6,7 +6,10 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.system.FlxSound;
+import flixel.tweens.FlxEase.EaseFunction;
 import flixel.tweens.FlxTween;
+import flixel.tweens.motion.LinearMotion;
+
 import flixel.util.FlxPoint;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxAngle;
@@ -34,6 +37,8 @@ class KamikazeMO2D extends FlxSprite
 	private var snd_banzai:FlxSound;
 	
 	private var moveBodyTween:FlxTween;
+	private var tweenDuration:Float;
+	private var linearMotion:LinearMotion;
 	
 	private var bezierMO2D : CurveBezierMO2D = null;
 	private var banzai:Bool = false;
@@ -42,7 +47,7 @@ class KamikazeMO2D extends FlxSprite
 	private var drawing:Bool = true;
 	private var slowMotion:Bool = false;
 	private var spKamikaze : FlxSprite;
-	private var pointsForCurve : Int = 2;
+	private var pointsForCurve : Int = 3;
 	private var countPoints : Int = 0;
 	private var bezierPoints : Array<flash.geom.Point>;
 	private var slowMotionPoints : Array<flash.geom.Point>;
@@ -205,7 +210,7 @@ class KamikazeMO2D extends FlxSprite
 			if (countPoints == pointsForCurve && !banzai)
 			{
 				banzai = true;
-				snd_banzai.play();
+				//snd_banzai.play();
 			}
 		}
 		else
@@ -238,6 +243,22 @@ class KamikazeMO2D extends FlxSprite
 			bezierMO2D.draw();
 		}		
 	}
+	
+	public function CB_MoveOnBezierTween(tween:FlxTween):Void
+	{
+		indexBezierPoint++;
+	}
+
+	public function MoveOnBezierTween():Void
+	{
+		var pf = bezierPoints[indexBezierPoint];
+		var options:TweenOptions = { type:FlxTween.ONESHOT, complete:CB_MoveOnBezierTween };
+
+		tweenDuration = (slowMotion) ? FlxG.elapsed*10.0 : FlxG.elapsed;
+			
+		if (moveBodyTween == null || !moveBodyTween.active || moveBodyTween.finished)
+			moveBodyTween = FlxTween.tween(body.position, { x:pf.x, y:pf.y }, tweenDuration, options);
+	}
 
 	public function MoveOnBezier():Void
 	{
@@ -245,27 +266,14 @@ class KamikazeMO2D extends FlxSprite
 		{
 			if (indexBezierPoint < bezierPoints.length)
 			{
-				if (slowMotion)
-				{
-					LoadSlowMotionPoints();
-				}
-				else
-				{
-					// indico la posicion y rotacion que debe tomar en cada punto
-					body.position.setxy(	bezierPoints[indexBezierPoint].x,	bezierPoints[indexBezierPoint].y);			
-					body.rotation = bezierPointsAngles[indexBezierPoint];
-					indexBezierPoint++;
-				}
-				
-				if (indexBezierPoint >= bezierPoints.length)
-				{
-					LaunchKamikaze();
-				}
+				MoveOnBezierTween();
+				body.rotation = bezierPointsAngles[indexBezierPoint];
 			}
-			//else
-			//{
-				//
-			//}
+			else
+			{
+				//moveBodyTween.active = false;
+				LaunchKamikaze();
+			}
 		}
 		else
 		{
