@@ -243,22 +243,6 @@ class KamikazeMO2D extends FlxSprite
 			bezierMO2D.draw();
 		}		
 	}
-	
-	public function CB_MoveOnBezierTween(tween:FlxTween):Void
-	{
-		indexBezierPoint++;
-	}
-
-	public function MoveOnBezierTween():Void
-	{
-		var pf = bezierPoints[indexBezierPoint];
-		var options:TweenOptions = { type:FlxTween.ONESHOT, complete:CB_MoveOnBezierTween };
-
-		tweenDuration = (slowMotion) ? FlxG.elapsed*10.0 : FlxG.elapsed;
-			
-		if (moveBodyTween == null || !moveBodyTween.active || moveBodyTween.finished)
-			moveBodyTween = FlxTween.tween(body.position, { x:pf.x, y:pf.y }, tweenDuration, options);
-	}
 
 	public function MoveOnBezier():Void
 	{
@@ -266,8 +250,7 @@ class KamikazeMO2D extends FlxSprite
 		{
 			if (indexBezierPoint < bezierPoints.length)
 			{
-				MoveOnBezierTween();
-				body.rotation = bezierPointsAngles[indexBezierPoint];
+				MoveOnBezierTween();				
 			}
 			else
 			{
@@ -284,7 +267,26 @@ class KamikazeMO2D extends FlxSprite
 		
 
 	}
+
+	public function MoveOnBezierTween():Void
+	{
+		if (moveBodyTween == null || !moveBodyTween.active || moveBodyTween.finished)
+		{
+			var pf = bezierPoints[indexBezierPoint];
+			var options:TweenOptions = { type:FlxTween.ONESHOT, complete:CB_MoveOnBezierTween };
+
+			tweenDuration = (slowMotion) ? FlxG.elapsed*10.0 : FlxG.elapsed;
+		
+			moveBodyTween = FlxTween.tween(body.position, { x:pf.x, y:pf.y }, tweenDuration, options);
+		}
+	}
 	
+	public function CB_MoveOnBezierTween(tween:FlxTween):Void
+	{
+		body.rotation = bezierPointsAngles[indexBezierPoint];
+		indexBezierPoint++;
+	}
+
 	public function LoadBezierPoints():Void
 	{
 		// borra todos los puntos guardados
@@ -375,10 +377,12 @@ class KamikazeMO2D extends FlxSprite
 	override public function destroy():Void
 	{
 		//trace("destroy()");
+		new KamikazeExplosion(new Point(x + _halfWidth, y + _halfHeight));
 		super.destroy();
-		//space.bodies.remove(body);
-		//space.bodies.remove(bodyAux);
-		//space.constraints.remove(weldJoint);
+		
+		space.bodies.remove(body);
+		space.bodies.remove(bodyAux);
+		space.constraints.remove(weldJoint);
 	}
 	
 }
