@@ -127,6 +127,7 @@ class GameNapeState extends FlxNapeState
 		
 		//trace("collision.int2.toString() = " + collision.int2.toString());
 		
+		kamikaze.Explosion();
 		kamikaze.destroy();// .active = false;
 	}
 	

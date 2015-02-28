@@ -77,7 +77,10 @@ class KamikazeMO2D extends FlxSprite
 		//cargo la imagen de animacion
 		this.loadGraphic("gfx/kamikaze-1760-80x38.png", true, 80, 38);
 		//this.loadRotatedGraphic("gfx/kamikaze-1760-80x38.png", 360, 0, false, true);
-		this.animation.add("flying", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21], 30, true);
+		var frames:Array<Int> = new Array<Int>();
+		for (f in 0...22)
+			frames.push(f);
+		this.animation.add("flying", frames, 30, true);
 		this.animation.play("flying", true);
 		//this.bakedRotationAngle = 1.0;
 		
@@ -210,7 +213,7 @@ class KamikazeMO2D extends FlxSprite
 			if (countPoints == pointsForCurve && !banzai)
 			{
 				banzai = true;
-				//snd_banzai.play();
+				snd_banzai.play();
 			}
 		}
 		else
@@ -329,7 +332,7 @@ class KamikazeMO2D extends FlxSprite
 			auxPoints.push(pf);
 			
 			var dt:Float = 0.05 / 0.0016;// FlxG.elapsed;
-			trace("dt = "+dt);
+			//trace("dt = "+dt);
 			
 		}
 	}
@@ -374,10 +377,16 @@ class KamikazeMO2D extends FlxSprite
 		//snd_banzai.play();
 	}
 	
+	public function Explosion():Void
+	{
+		//new KamikazeExplosion(new Point(x + _halfWidth, y + _halfHeight));
+		new KamikazeExplosion(new Point(x, y));
+	}
+	
 	override public function destroy():Void
 	{
 		//trace("destroy()");
-		new KamikazeExplosion(new Point(x + _halfWidth, y + _halfHeight));
+		//new KamikazeExplosion(new Point(x + _halfWidth, y + _halfHeight));
 		super.destroy();
 		
 		space.bodies.remove(body);
