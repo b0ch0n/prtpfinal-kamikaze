@@ -2,6 +2,8 @@ package entities;
 import flash.geom.Point;
 import flixel.addons.nape.FlxNapeState;
 import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.system.FlxSound;
 import flixel.util.FlxAngle;
 import nape.callbacks.BodyCallback;
 import nape.callbacks.BodyListener;
@@ -17,8 +19,10 @@ import scenes.GameNapeState;
  * ...
  * @author Marcelo Ruben Guardia
  */
-class KamikazeExplosion
+class KamikazeExplosion extends FlxSprite
 {
+	private var snd_explosion:FlxSound;
+
 	private var startPos:Point;
 	private var radius:Float = 10.0;
 	private var power:Float = 200.0;
@@ -31,7 +35,19 @@ class KamikazeExplosion
 	
 	public function new(pos:Point)//x:Float = 100.0, y:Float = 100.0)
 	{
-		startPos = pos;//new Point(x, y);
+		super(pos.x, pos.y);
+		this.loadGraphic(GC.IMG_explosion_1, true , 64, 64);
+		//scale.set(5.0, 5.0);
+		centerOrigin();
+		
+		var frames:Array<Int> = [];
+		for(f in 0...48)
+			frames.push(f);
+		
+		animation.add("explosion", frames, 60, false);
+		animation.play("explosion", true, 0);
+
+		startPos = pos;
 		
 		var angle:Float = 0.0;
 		while (angle < 360.0)
@@ -59,7 +75,23 @@ class KamikazeExplosion
 			
 			angle += deltaAngle;
 		}
+		
+				
+		snd_explosion = new FlxSound();
+		snd_explosion.loadEmbedded(GC.SND_explosion_1);
+		snd_explosion.play();
+
+		FlxG.state.add(this);
 	}
 	
+	override public function update():Void
+	{
+		super.update();
+	}
+	
+	override public function draw():Void
+	{
+		super.draw();
+	}
 	
 }

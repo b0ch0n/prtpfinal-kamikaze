@@ -20,7 +20,7 @@ class GC
 	// tileset
 	public static var IMG_tileset:Dynamic = "gfx/tileset.png";	
 
-	// sprites
+	// sprites para usar
 	public static var IMG_kamikaze:Dynamic = "gfx/kamikaze.png";
 	public static var IMG_red_point:Dynamic = "gfx/red-point.png";
 	public static var IMG_green_point:Dynamic = "gfx/green-point.png";
@@ -33,16 +33,18 @@ class GC
 	public static var IMG_breakable_4:Dynamic = "gfx/box/rompible4.png";
 	public static var IMG_breakable_5:Dynamic = "gfx/box/rompible5.png";
 	public static var IMG_breakable_6:Dynamic = "gfx/box/rompible6.png";
+	public static var IMG_explosion_1:Dynamic = "gfx/fx/explosion.png";
 	
 	// sprites para renombrar
 	public static var IMG_tnt:Dynamic = "gfx/tnt.png";
-	public static var IMG_helicoptero:Dynamic = "gfx/helicoptero.png";
 	public static var IMG_tanque:Dynamic = "gfx/tanque.png";
 	
 	
-	// sonidos
-	public static var SND_boom:Dynamic = "audio/boom.mp3";
+	// sonidos para usar
 	public static var SND_explosion:Dynamic = "audio/explosion.mp3";
+	public static var SND_explosion_1:Dynamic = "audio/explosion-01.mp3";
+	
+	// sonidos para renombrar
 	public static var SND_helicopter_shoot:Dynamic = "audio/helicopter_shoot.mp3";
 	public static var SND_helicopter:Dynamic = "audio/helicopter.mp3";
 	public static var SND_tank_jump:Dynamic = "audio/tank_jump.mp3";
