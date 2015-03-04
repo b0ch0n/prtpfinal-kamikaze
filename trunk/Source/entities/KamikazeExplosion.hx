@@ -37,7 +37,7 @@ class KamikazeExplosion extends FlxSprite
 	{
 		super(pos.x, pos.y);
 		this.loadGraphic(GC.IMG_explosion_1, true , 64, 64);
-		//scale.set(5.0, 5.0);
+		scale.set(2.5, 2.5);
 		centerOrigin();
 		
 		var frames:Array<Int> = [];
@@ -52,11 +52,11 @@ class KamikazeExplosion extends FlxSprite
 		var angle:Float = 0.0;
 		while (angle < 360.0)
 		{
-			var posBP:Vec2 = new Vec2(pos.x - radius * Math.cos(FlxAngle.asRadians(angle)), pos.y - radius * Math.sin(FlxAngle.asRadians(angle)));
+			var posBP:Vec2 = new Vec2(this._halfWidth + pos.x - radius * Math.cos(FlxAngle.asRadians(angle)), this._halfHeight + pos.y - radius * Math.sin(FlxAngle.asRadians(angle)));
 			//var posBP:Vec2 = new Vec2(pos.x + radius * Math.random(), pos.y + radius * Math.random());
 			
 			//impulso en direccion desde el origen de la explosion hasta la posicion de la actual particula
-			var impulse:Vec2 = new Vec2((pos.x - posBP.x) * power, (pos.y - posBP.y) * power);
+			var impulse:Vec2 = new Vec2((this._halfWidth + pos.x - posBP.x) * power, (this._halfHeight + pos.y - posBP.y) * power);
 			
 			//trace("pos = "+pos+"   posBP = "+posBP+"   impulse = "+impulse);
 			
