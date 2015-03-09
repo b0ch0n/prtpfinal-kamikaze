@@ -114,11 +114,24 @@ class GameNapeState extends FlxNapeState
 		//LoadUI();
 
 		
-		// Configuracion de las colisiones
-		interactionListener = new InteractionListener(CbEvent.BEGIN, InteractionType.COLLISION, wallCollisionType, kamikazeCollisionType, kamikazeToWall);
+		ConfigsCollisions();
+	}
+	
+	/**
+	 * Configuracion de las colisiones
+		* */
+	public function ConfigsCollisions():Void
+	{
+		interactionListener = new InteractionListener(
+		CbEvent.BEGIN,
+		InteractionType.COLLISION,
+		wallCollisionType,
+		kamikazeCollisionType,
+		kamikazeToWall);
 		FlxNapeState.space.listeners.add(interactionListener);
 		
 		kamikaze.SetCbType(kamikazeCollisionType);// despues tengo que hacer lo mismo pero con sensor para juntar items
+		
 	}
 	
 	public function kamikazeToWall(collision:InteractionCallback):Void
