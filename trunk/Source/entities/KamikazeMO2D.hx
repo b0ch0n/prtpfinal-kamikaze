@@ -101,6 +101,16 @@ class KamikazeMO2D extends FlxSprite
 		snd_banzai.loadEmbedded(GC.SND_banzai_02);
 		
 		//moveBodyTween = new FlxTween();
+		
+		trace("\nCrear :\n"
+		+"1. - Objetos cadenas hechas con joints.\n"
+		+"2. - Objetos Iman que desvien objetos metalicos como el avion y otros.\n"
+		+"3. - Objetos Estrellas para sumar puntos de logros.\n"
+		+"4. - Objetos de contrapeso unidos por cadenas.\n"		
+		+"5. - Objetos misil para disparar con el Kamikaze.\n"
+		+"6. - Objetos balas paradisparar con el Kamikaze.\n"
+		+"7. - Regular con un timer el tiempo de slowMotion para los disparos de balas y misiles.\n"
+		+"8. - Objetos TNT que explotan al recibir disparos de balas, misiles o al ser aplastados.\n");
 	}
 
 	private function SetBodiesNape(obj:TiledObject):Void
