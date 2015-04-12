@@ -106,11 +106,16 @@ class KamikazeMO2D extends FlxSprite
 		+"1. - Objetos cadenas hechas con joints.\n"
 		+"2. - Objetos Iman que desvien objetos metalicos como el avion y otros.\n"
 		+"3. - Objetos Estrellas para sumar puntos de logros.\n"
-		+"4. - Objetos de contrapeso unidos por cadenas.\n"		
-		+"5. - Objetos misil para disparar con el Kamikaze.\n"
-		+"6. - Objetos balas paradisparar con el Kamikaze.\n"
-		+"7. - Regular con un timer el tiempo de slowMotion para los disparos de balas y misiles.\n"
-		+"8. - Objetos TNT que explotan al recibir disparos de balas, misiles o al ser aplastados.\n");
+		+"4. - Objetos de contrapeso unidos por cadenas.\n"
+		+"5. - Regular con un timer el tiempo de slowMotion para los disparos de balas y misiles.\n"
+		+"6. - Objetos misil para disparar con el Kamikaze.\n"
+		+"7. - Objetos balas para disparar con el Kamikaze.\n"
+		+"8. - Objetos TNT que explotan al recibir kamikaze, disparos de balas, misiles o al ser aplastados.\n"
+		+"9. - World y Level Selector.\n"
+		+"10. - Cuando el jugador elige un nivel enviar un kamikaze hasta el boton y que explote en ese nivel seleccionado.\n"
+		+"11. - Si el jugador elige un boton bloqueado, sacudir la pantalla.\n"
+		+"12. - Proximamente!!!.\n"
+		);
 	}
 
 	private function SetBodiesNape(obj:TiledObject):Void
