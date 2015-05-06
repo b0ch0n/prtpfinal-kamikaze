@@ -34,10 +34,10 @@ class GC
 	public static var IMG_breakable_5:Dynamic = "gfx/box/rompible5.png";
 	public static var IMG_breakable_6:Dynamic = "gfx/box/rompible6.png";
 	public static var IMG_explosion_1:Dynamic = "gfx/fx/explosion.png";
+	public static var IMG_link_chain:Dynamic = "gfx/link-chain-256-384.png";
 	
 	// sprites para renombrar
-	public static var IMG_tnt:Dynamic = "gfx/tnt.png";
-	public static var IMG_tanque:Dynamic = "gfx/tanque.png";
+	public static var IMG_test:Dynamic = "gfx/test.png";
 	
 	
 	// sonidos para usar

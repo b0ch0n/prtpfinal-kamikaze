@@ -1,6 +1,7 @@
 package ;
 
 import entities.breakable.BoxNape;
+import entities.breakable.LinkChain;
 import entities.KamikazeMO2D;
 import entities.KamikazeNapeMO2D;
 import flixel.addons.editors.tiled.TiledMap;
@@ -137,6 +138,10 @@ class TiledLevel extends TiledMap
 				var targetZoom = new FlxObject(obj.x, obj.y, obj.width, obj.height);
 				state.add(targetZoom);
 				cast(state, GameNapeState).SetTargetCamera(targetZoom);
+				
+			case "chain":
+				//trace(obj.xmlData);
+				//state.add(new LinkChain(obj)); state.add(new LinkChain(obj));
 				
 			default://nada
 		}

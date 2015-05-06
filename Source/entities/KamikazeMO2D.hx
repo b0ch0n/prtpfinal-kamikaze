@@ -47,7 +47,7 @@ class KamikazeMO2D extends FlxSprite
 	private var drawing:Bool = true;
 	private var slowMotion:Bool = false;
 	private var spKamikaze : FlxSprite;
-	private var pointsForCurve : Int = 3;
+	private var pointsForCurve : Int = 5;
 	private var countPoints : Int = 0;
 	private var bezierPoints : Array<flash.geom.Point>;
 	private var slowMotionPoints : Array<flash.geom.Point>;
